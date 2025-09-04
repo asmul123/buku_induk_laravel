@@ -25,24 +25,24 @@ class SingkronController extends Controller
         $sekolah = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
-                'npsn' => '20209201'
+                'npsn' => $dapodik->npsn
             ]);
         $pendidik = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getGtk", [
-            'npsn' => '20209201'
+            'npsn' => $dapodik->npsn
             ]);
 
         $rombongan_belajar = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getRombonganBelajar", [
-            'npsn' => '20209201'
+            'npsn' => $dapodik->npsn
             ]);
         
         $peserta_didik = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getPesertaDidik", [
-            'npsn' => '20209201'
+            'npsn' => $dapodik->npsn
             ]);
 
         $skl = $sekolah->json();
@@ -81,7 +81,7 @@ class SingkronController extends Controller
         $sekolah = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
-                'npsn' => '20209201'
+                'npsn' => $dapodik->npsn
             ]);
         $skl = $sekolah->json()['rows'];
         $cekskl = Sekolah::where('id', $skl['sekolah_id'])->get()->count();

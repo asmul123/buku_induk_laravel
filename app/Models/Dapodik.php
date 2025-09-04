@@ -11,6 +11,7 @@ class Dapodik extends Model
     
     protected $fillable = [
         'address',
+        'npsn',
         'token'
     ];
 }

@@ -40,6 +40,17 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group has-icon-left">
+                                        <label for="first-name-icon">NPSN</label>
+                                        <div class="position-relative">
+                                            <input type="text" name="npsn" class="form-control" placeholder="xxxxxxxx" id="first-name-icon" value="{{ $dapodik->npsn }}">
+                                            <div class="form-control-icon">
+                                                <i data-feather="home"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group has-icon-left">
                                         <label for="first-name-icon">Token</label>
                                         <div class="position-relative">
                                             <input type="text" name="token" class="form-control" placeholder="xxxxxxx" id="first-name-icon" value="{{ $dapodik->token }}">

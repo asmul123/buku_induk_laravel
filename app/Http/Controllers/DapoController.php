@@ -64,6 +64,7 @@ class DapoController extends Controller
     public function update(Request $request) {
             $validated = $request->validate([
                 'address' => 'required',
+                'npsn' => 'required',
                 'token' => 'required'
             ]);
                     Dapodik::where('id', '1')->update($validated);
