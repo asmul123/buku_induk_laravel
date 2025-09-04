@@ -321,7 +321,7 @@ class SingkronController extends Controller
                     'nama' => $r['nama'],
                     'ptk_id' => $r['ptk_id'],
                     'tingkat' => $r['tingkat_pendidikan_id'],
-                    'jenis_rombel' => $r['jenis_rombel']
+                    'jenisrombel_id' => $r['jenis_rombel']
                 ];
                 Rombonganbelajar::where('id', $r['rombongan_belajar_id'])->update($data);
                 $update++;
@@ -336,7 +336,7 @@ class SingkronController extends Controller
                     'nama' => $r['nama'],
                     'ptk_id' => $r['ptk_id'],
                     'tingkat' => $r['tingkat_pendidikan_id'],
-                    'jenis_rombel' => $r['jenis_rombel']
+                    'jenisrombel_id' => $r['jenis_rombel']
                 ];
                 Rombonganbelajar::create($data);
                 $add++;
