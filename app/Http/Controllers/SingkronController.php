@@ -141,7 +141,7 @@ class SingkronController extends Controller
         $sekolah = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
-                'npsn' => '20209201'
+                'npsn' => $dapodik->npsn
             ]);
         $sekolah_id = $sekolah->json()['rows']['sekolah_id'];
         $update = 0;
@@ -149,7 +149,7 @@ class SingkronController extends Controller
         $ptk = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getGtk", [
-                'npsn' => '20209201'
+                'npsn' => $dapodik->npsn
             ]);
         $ptks = $ptk->json()['rows'];
         foreach($ptks as $ptk){
@@ -198,7 +198,7 @@ class SingkronController extends Controller
         $sekolah = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
-                'npsn' => '20209201'
+                'npsn' => $dapodik->npsn
             ]);
         $sekolah_id = $sekolah->json()['rows']['sekolah_id'];
         $update = 0;
@@ -208,7 +208,7 @@ class SingkronController extends Controller
         $pesertadidik = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getPesertaDidik", [
-                'npsn' => '20209201'
+                'npsn' => $dapodik->npsn
             ]);
         $pds = $pesertadidik->json()['rows'];
         foreach($pds as $pd){
@@ -294,7 +294,7 @@ class SingkronController extends Controller
         $sekolah = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
-                'npsn' => '20209201'
+                'npsn' => $dapodik->npsn
             ]);
         $sekolah_id = $sekolah->json()['rows']['sekolah_id'];
         $update = 0;
@@ -306,7 +306,7 @@ class SingkronController extends Controller
         $rombel = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getRombonganBelajar", [
-                'npsn' => '20209201'
+                'npsn' => $dapodik->npsn
             ]);
         $rombels = $rombel->json()['rows'];
         foreach($rombels as $r){
