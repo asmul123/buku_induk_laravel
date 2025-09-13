@@ -174,7 +174,7 @@
                                 <td valign="top">11.</td>
                                 <td valign="top">Pekerjaan Wali </td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ App\Models\Pekerjaan::where('id', $murid->kerja_wali)->first()->nama }}</td>
+                                <td valign="top">{{ ($murid->kerja_wali <> null) ? App\Models\Pekerjaan::where('id', $murid->kerja_wali)->first()->nama : '-' }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">12.</td>
