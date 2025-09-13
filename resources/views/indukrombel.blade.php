@@ -74,7 +74,7 @@
                             @foreach($anggotarombels as $anggotarombel)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td><img src="{{ url('assets/images/avatar/no_image.jpg') }}" width="30%"></td>
+                                    <td><img src="{{ $anggotarombel->photo == null ? url('assets/images/avatar/no_image.jpg') : url('storage/'.$anggotarombel->photo) }}" width="30%"></td>
                                     <td>{{ $anggotarombel->no_induk }}</td>
                                     <td>{{ $anggotarombel->nisn }}</td>
                                     <td>{{ $anggotarombel->nama }}</td>

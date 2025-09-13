@@ -6,6 +6,7 @@ use App\Models\Semester;
 use App\Models\Rombonganbelajar;
 use App\Models\Anggotarombel;
 use App\Models\Pesertadidik;
+use App\Models\Agama;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -103,8 +104,172 @@ class IndukrombelController extends Controller
         $data = ([
             'photo' => $filePath
         ]);
-                Pesertadidik::where('id', $request->pesertadidik_id)->update($data);
+            Pesertadidik::where('id', $request->pesertadidik_id)->update($data);
         // Jika kamu ingin simpan ke database, bisa simpan $filePath di kolom tabel
+        return redirect()->intended('/detailmurid?pd_id='.$request->pesertadidik_id);
+    }
+
+    public function edit(Request $request)
+    {
+        $murid=Pesertadidik::where('id', $request->murid_id)->first();
+        
+        echo '
+        <table>
+            <tr>
+                <td width="5%">1.</td>
+                <td width="40%">Nama Lengkap </td>
+                <td width="2%">:</td>
+                <td width="53%" valign="top"><input type="text" class="form-control" name="nama" value="'.$murid->nama.'"></td>
+            </tr>
+            <tr>
+                <td valign="top">2.</td>
+                <td valign="top">Jenis Kelamin </td>
+                <td valign="top">:</td>
+                <td valign="top">
+                <select name="jenis_kelamin" class="form-control">';
+                if($murid->jenis_kelamin == 'L'){
+                    echo '<option value="L" selected>Laki-laki</option>
+                    <option value="P">Perempuan</option>';
+                } else {
+                    echo '<option value="L">Laki-laki</option>
+                    <option value="P" selected>Perempuan</option>';
+                }
+                echo '</select>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">3.</td>
+                <td valign="top">Tempat, Tanggal Lahir </td>
+                <td valign="top">:</td>
+                <td valign="top"><div class="input-group">
+                <input type="text" class="form-control" name="tempat_lahir" value="'.$murid->tempat_lahir.'">
+                <input type="date" class="form-control" name="tanggal_lahir" value="'.$murid->tanggal_lahir.'">
+                </div>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">4.</td>
+                <td valign="top">Warga Negara</td>
+                <td valign="top">:</td>
+                <td valign="top"><input type="text" class="form-control" name="warga_negera" value="'.$murid->warga_negera.'"></td>
+            </tr>
+            <tr>
+                <td valign="top">5.</td>
+                <td valign="top">Agama </td>
+                <td valign="top">:</td>
+                <td valign="top">
+                <select name="jenis_kelamin" class="form-control">';
+                    $agamas = Agama::all();
+                    foreach($agamas as $agama){
+                        echo '<option value="'.$agama->id.'">'.$agama->nama.'</option>';
+                    }
+                echo '
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">6.</td>
+                <td valign="top">Alamat/tempat tinggal siswa </td>
+                <td valign="top">:</td>
+                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", ".$murid->kecamatan }}</td>
+            </tr>
+            <tr>
+                <td valign="top">7.</td>
+                <td valign="top">Nama Orang Tua </td>
+                <td valign="top"></td>
+                <td valign="top"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">a. Ayah</td>
+                <td valign="top">:</td>
+                <td valign="top">{{ $murid->nama_ayah }}</td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">b. Ibu</td>
+                <td valign="top">:</td>
+                <td valign="top">{{ $murid->nama_ibu }}</td>
+            </tr>
+            <tr>
+                <td valign="top">8.</td>
+                <td valign="top">Pekerjaan </td>
+                <td valign="top"></td>
+                <td valign="top"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">a. Ayah</td>
+                <td valign="top">:</td>
+                <td valign="top"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">b. Ibu</td>
+                <td valign="top">:</td>
+                <td valign="top"></td>
+            </tr>
+            <tr>
+                <td valign="top">9.</td>
+                <td valign="top">Alamat Rumah </td>
+                <td valign="top">:</td>
+                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", ".$murid->kecamatan }}</td>
+            </tr>
+            <tr>
+                <td valign="top">10.</td>
+                <td valign="top">Nama Wali Siswa </td>
+                <td valign="top">:</td>
+                <td valign="top">{{ $murid->nama_wali }}</td>
+            </tr>
+            <tr>
+                <td valign="top">11.</td>
+                <td valign="top">Pekerjaan Wali </td>
+                <td valign="top">:</td>
+                <td valign="top"></td>
+            </tr>
+            <tr>
+                <td valign="top">12.</td>
+                <td valign="top">Alamat Rumah Wali </td>
+                <td valign="top">:</td>
+                <td valign="top">{{ $murid->alamat_wali }}</td>
+            </tr>
+            <tr>
+                <td valign="top">13.</td>
+                <td valign="top">Diterima Menjadi Siswa </td>
+                <td valign="top"></td>
+                <td valign="top"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">a. Di kelas</td>
+                <td valign="top">:</td>
+                <td valign="top">{{ $murid->diterima_kelas }}</td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">b. Mulai tanggal</td>
+                <td valign="top">:</td>
+                <td valign="top"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">c. Asal Sekolah</td>
+                <td valign="top">:</td>
+                <td valign="top">{{ $murid->sekolah_asal }}</td>
+            </tr>
+            <tr>
+                <td valign="top">14.</td>
+                <td valign="top">No. Ijazah </td>
+                <td valign="top">:</td>
+                <td valign="top">-</td>
+            </tr>
+            <tr>
+                <td valign="top">15.</td>
+                <td valign="top">Tanggal Ijazah </td>
+                <td valign="top">:</td>
+                <td valign="top">-</td>
+            </tr>
+        </table>';
     }
    
 }

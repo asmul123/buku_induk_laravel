@@ -86,7 +86,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">Detail</h4>
                         <div class="d-flex ">
-                             <a href="javascript: history.go(-1)" class="btn btn-warning">Edit</a> 
+                             <a href="javascript:void(0)" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalGeneral" id="btn-edit-biodata" data-id="{{ $murid->id }}">Edit</a> 
                         </div>
                     </div>
                     <div class="card-body">
@@ -331,6 +331,30 @@
             </div>
         </div>
     </section>
+    <!-- Template Modal -->
+    <div class="modal fade text-left w-100" id="modalGeneral" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel16" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title" id="modal-title">No Title</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div id="modal-body">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-light-secondary" data-dismiss="modal">
+                    <i class="bx bx-x d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Tutup</span>
+                </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @endsection
@@ -354,5 +378,20 @@
             return false;
         });
     });
+
+    $('body').on('click', '#btn-edit-biodata', function () {
+                let murid_id = $(this).data('id');
+                
+                //fetch detail post with ajax
+                $.ajax({
+                    url: "{{ url('/editmurid?murid_id=') }}"+murid_id+"&aksi=edit",
+                    type: "GET",
+                    cache: false,
+                    success:function(response){
+                        $('#modal-title').html("Edit Biodata");
+                        $('#modal-body').html(response);
+                    }
+                });
+        });
 </script>
 @endsection
