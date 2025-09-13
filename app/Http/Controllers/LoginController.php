@@ -47,13 +47,13 @@ class LoginController extends Controller
     public function authadmin(Request $request)
     {
         $credentials = $request->validate([
-            'nomor_pendaftaran' => 'required',
+            'email' => 'required',
             'password' => 'required'
         ]);
                 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();                    
-            return redirect()->intended('/rekap');
+            return redirect()->intended('/indukrombel');
         } else {
             return redirect()->back()->with('failed', 'Nama Pengguna atau Kata Sandi Salah');
         }

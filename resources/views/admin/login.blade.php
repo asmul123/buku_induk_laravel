@@ -33,9 +33,9 @@
                     <form action="{{ url('/admin') }}" method="post">
                         @csrf
                         <div class="form-group position-relative has-icon-left">
-                            <label for="nomor_pendaftaran">Nama Pengguna</label>
+                            <label for="nomor_pendaftaran">Email</label>
                             <div class="position-relative">
-                                <input type="text" class="form-control" id="nomor_pendaftaran" name="nomor_pendaftaran" placeholder="Masukan Nama Pengguna">
+                                <input type="text" class="form-control" id="nomor_pendaftaran" name="email" placeholder="Masukan Nama Pengguna">
                                 <div class="form-control-icon">
                                     <i data-feather="user"></i>
                                 </div>

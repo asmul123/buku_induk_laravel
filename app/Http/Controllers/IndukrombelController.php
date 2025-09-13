@@ -7,6 +7,7 @@ use App\Models\Rombonganbelajar;
 use App\Models\Anggotarombel;
 use App\Models\Pesertadidik;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class IndukrombelController extends Controller
@@ -88,30 +89,22 @@ class IndukrombelController extends Controller
         return $pdf->stream('buku_induk - '.$murid->nama.'.pdf');
     }
 
-    public function review()
+    public function upload(Request $request)
     {
-        $siswa = [
-            'nama' => 'Ahmad Naufal Hilmi',
-            'nis' => '222310506',
-            'nisn' => '0078300443',
-            'ttl' => 'Garut, 12 Agustus 2007',
-            'alamat' => 'Jl. Melong Tengah, RT.5/4, Melong, Kec. Cimahi Selatan',
-            'ayah' => 'Ujang Hendra',
-            'ibu' => 'Rika Sartika',
-            'kelas' => 'X TJK 1',
-            'mulai' => '01 Juli 2022',
-            'asal_sekolah' => 'SMP PLUS AL KOHAR TAROGONG KIDUL',
-            'foto' => public_path('assets/images/no_image.jpg') // path foto
-        ];
+        // Validasi
+        $request->validate([
+            'file' => 'required|mimes:jpg,jpeg,png,pdf|max:2048'
+        ]);
+            $cekphoto = Pesertadidik::where('id',$request->pesertadidik_id)->first()->photo;
+            $cekphoto <> null ? Storage::disk('public')->delete($cekphoto) : false;
+        // Simpan file ke storage/app/public/uploads
+        $filePath = $request->file('file')->store('uploads', 'public');
 
-        $nilai = [
-            ['mapel' => 'Pendidikan Agama Islam dan Budi Pekerti', 'ganjil' => 83, 'genap' => 86],
-            ['mapel' => 'Pendidikan Pancasila', 'ganjil' => 80, 'genap' => 85],
-            ['mapel' => 'Bahasa Indonesia', 'ganjil' => 80, 'genap' => 83],
-        ];
-
-        
-        return view('cetak', compact('siswa', 'nilai'));
+        $data = ([
+            'photo' => $filePath
+        ]);
+                Pesertadidik::where('id', $request->pesertadidik_id)->update($data);
+        // Jika kamu ingin simpan ke database, bisa simpan $filePath di kolom tabel
     }
    
 }

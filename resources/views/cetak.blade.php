@@ -38,7 +38,7 @@
                             <table>
                                 <tr>
                                     <td width="20%">
-                                        <img src="{{ public_path('assets/images/avatar/no_image.jpg') }}" width="100%"><br>
+                                        <img src="{{ $murid->photo == null ? public_path('assets/images/avatar/no_image.jpg') : public_path('storage/'.$murid->photo) }}" width="100%"><br>
                                     </td>
                                     <td valign="top">
                                         NIS : {{ $murid->no_induk }}<br>
@@ -222,41 +222,56 @@
                         <tr>
                             <td colspan="{{ count($rombels)+2 }}"><strong>{{ $kelompok->nama_kelompok }}</strong></td>
                         </tr>
-                        @php
+                            @php
                             $pesertaId = $murid->id;
                             $no_urut = 1;
                             $pembelajarans = App\Models\Pembelajaran::with('rombonganbelajar')
                             ->whereHas('rombonganbelajar.anggotarombel', function($q) use ($pesertaId) {
                                 $q->where('pesertadidik_id', $pesertaId);
+                            })->whereHas('rombonganbelajar', function($q) {
+                                $q->where('jenisrombel_id', '1');
                             })->where('kelompok_id', $kelompok->id)
                             ->where('no_urut', '<>', null)
                             ->orderBy('no_urut', 'asc')->get()->groupBy('matapelajaran_id');
-                        @endphp
+                            @endphp
                         @foreach($pembelajarans as $pembelajaran => $items)
-                        <tr>
-                            <td align="center">{{ $no_urut++ }}</td>
-                            <td>{{ $items->first()->nama_mata_pelajaran }}</td>
-                            @foreach($rombels as $rombel)
                             @php
-                                $pembelajaranini = App\Models\Pembelajaran::where('matapelajaran_id', $items->first()->matapelajaran_id)->where('rombonganbelajar_id', $rombel->rombonganbelajar_id)->first();
-                                if($pembelajaranini){
-                                    $pembelajaran_id = $pembelajaranini->id;
-                                    $nilai = App\Models\Nilaiakhir::where('pembelajaran_id', $pembelajaran_id)->where('anggotarombel_id', $rombel->id)->first();
-                                    $nilai ? ${'tot'.$rombel->semester_id} = ${'tot'.$rombel->semester_id} + $nilai->nilai : false;
-                                    $nilai ? ${'jmp'.$rombel->semester_id}++ : false;
-                                } else {
-                                    $nilai = '';
-                                }
-                            @endphp                            
-                            <td align="center">{{ $nilai ? $nilai->nilai : '-' }}</td>
-                            @endforeach
-                        </tr>
+                                $mapel_id = $items->first()->matapelajaran_id;
+                            $cek_nilai_akhir = App\Models\Nilaiakhir::with('pembelajaran')
+                            ->whereHas('pembelajaran', function($q) use ($mapel_id){
+                                $q->where('matapelajaran_id', $mapel_id);
+                            })->with('anggotarombel')
+                            ->whereHas('anggotarombel', function($q) use ($pesertaId){
+                                $q->where('pesertadidik_id', $pesertaId);
+                            })->count();
+                            @endphp
+
+                            @if($cek_nilai_akhir <> 0)
+                            <tr>
+                                <td align="center">{{ $no_urut++ }}</td>
+                                <td>{{ $items->first()->nama_mata_pelajaran }}</td>
+                                @foreach($rombels as $rombel)
+                                @php
+                                    $pembelajaranini = App\Models\Pembelajaran::where('matapelajaran_id', $mapel_id)->where('rombonganbelajar_id', $rombel->rombonganbelajar_id)->where('no_urut', '<>', null)->first();
+                                    if($pembelajaranini){
+                                        $pembelajaran_id = $pembelajaranini->id;
+                                        $nilai = App\Models\Nilaiakhir::where('pembelajaran_id', $pembelajaran_id)->where('anggotarombel_id', $rombel->id)->first();
+                                        $nilai ? ${'tot'.$rombel->semester_id} = ${'tot'.$rombel->semester_id} + $nilai->nilai : false;
+                                        $nilai ? ${'jmp'.$rombel->semester_id}++ : false;
+                                    } else {
+                                        $nilai = '';
+                                    }
+                                @endphp                            
+                                <td align="center">{{ $nilai ? $nilai->nilai : '-' }}</td>
+                                @endforeach
+                            </tr>
+                            @endif
                         @endforeach
                         @endforeach
                         <tr>
                             <td colspan="2">Jumlah Nilai</td>
                             @foreach($rombels as $rombel)
-                            <td align="center">{{ ${'tot'.$rombel->semester_id} }}</td>
+                            <td align="center">{{ ${'tot'.$rombel->semester_id} <> 0 ? ${'tot'.$rombel->semester_id} : '-' }}</td>
                             @endforeach
                         </tr>
                         <tr>

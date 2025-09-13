@@ -23,15 +23,18 @@
         <div class="row mb-4">
             <div class="col-md-5">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h3 class='card-heading p-1 pl-3'>Buku Induk</h3>
+                        <div class="d-flex ">
+                             <a href="javascript: history.go(-1)" class="btn btn-danger">Kembali</a> 
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 col-12">
                                 <div class="row">
                                     <div class="col-4">
-                                        <img src="{{ url('assets/images/avatar/no_image.jpg') }}" width="100%">
+                                        <img src="{{ $murid->photo == null ? url('assets/images/avatar/no_image.jpg') : url('storage/'.$murid->photo) }}" width="100%">
                                     </div>
                                     <div class="col-8">
                                         <div>
@@ -51,14 +54,16 @@
                                                         <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
                                                         </button>
                                                     </div>
-                                                    <form action="#" method="post" enctype="multipart/form-data">
+                                                    <form action="{{ url('/upload') }}" method="post" enctype="multipart/form-data">
+                                                        @csrf
                                                     <div class="modal-body">
                                                             <div class="input-group mb-3">
                                                                 <div class="input-group-prepend">
                                                                     <span class="input-group-text">Unggah</span>
                                                                 </div>
                                                                 <div class="custom-file">
-                                                                    <input type="file" class="custom-file-input" name="fileToUpload">
+                                                                    <input type="file" class="custom-file-input" name="file">
+                                                                    <input type="hidden" name="pesertadidik_id" value="{{ $murid->id }}">
                                                                     <label class="custom-file-label">Pilih Foto</label>
                                                                 </div>
                                                             </div>
@@ -81,7 +86,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">Detail</h4>
                         <div class="d-flex ">
-                             <a href="javascript: history.go(-1)" class="btn btn-warning">Kembali</a> 
+                             <a href="javascript: history.go(-1)" class="btn btn-warning">Edit</a> 
                         </div>
                     </div>
                     <div class="card-body">
@@ -251,8 +256,11 @@
                                             Kelas : {{ $rombel->rombonganbelajar->nama }}<br>
                                             Tahun Pelajaran : {{ $rombel->semester->nama }}<br>
                                         </div>
-                                        <div class="card-header">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
                                             <h4 class="card-title">Daftar Nilai Peserta Didik</h4>
+                                            <div class="d-flex">
+                                                <a href="javascript: history.go(-1)" class="btn btn-warning">Edit</a> 
+                                            </div>
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
