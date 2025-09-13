@@ -40,7 +40,7 @@
                                         </div>
                                         <a href="#" target="_blank" class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">
                                             Unggah Foto</a>
-                                        <a href="#" target="_blank" class="btn btn-rounded btn-primary"><span
+                                        <a href="{{ url('/cetak?pd_id='.$murid->id) }}" target="_blank" class="btn btn-rounded btn-primary"><span
                                             class="btn-icon-left text-primary"><i class="fa fa-print"></i>
                                         </span>Cetak</a>
                                         <div class="modal fade" id="uploadModal">
@@ -120,7 +120,7 @@
                                 <td valign="top">6.</td>
                                 <td valign="top">Alamat/tempat tinggal siswa </td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", Kec. ".$murid->kecamatan }}</td>
+                                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", ".$murid->kecamatan }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">7.</td>
@@ -162,7 +162,7 @@
                                 <td valign="top">9.</td>
                                 <td valign="top">Alamat Rumah </td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", Kec. ".$murid->kecamatan }}</td>
+                                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", ".$murid->kecamatan }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">10.</td>
@@ -242,7 +242,7 @@
                                 @foreach($rombels as $rombel)
                                 @php
                                 $thn_kurikulum = date('Y', strtotime($rombel->rombonganbelajar->kurikulum->mulai_berlaku));
-                                $kelompoks = App\Models\Kelompok::where('kurikulum', $thn_kurikulum)->get()
+                                $kelompoks = App\Models\Kelompok::where('kurikulum', $thn_kurikulum)->get();
                                 @endphp
                                 <div class="tab-pane fade{{ $no == 1 ? ' show active' : '' }}" id="list-{{ $no++ }}" role="tabpanel"
                                     aria-labelledby="list-{{ $no-1 }}-list">
@@ -286,6 +286,29 @@
                                                         </tr>
                                                         @endforeach
                                                         @endforeach
+                                                        @php
+                                                            $rombelmps = App\Models\Anggotarombel::where('pesertadidik_id', $rombel->pesertadidik_id)
+                                                            ->whereHas('rombonganbelajar', function ($query) {
+                                                                $query->where('jenisrombel_id', '16');
+                                                            })->where('semester_id', $rombel->semester_id)->get();
+                                                        @endphp
+                                                            @foreach($rombelmps as $rombelmp)
+                                                                @php
+                                                                $pembelajaranmps = App\Models\Pembelajaran::where('rombonganbelajar_id', $rombelmp->rombonganbelajar_id)->where('no_urut', '<>', null)->orderBy('no_urut', 'asc')->get();
+                                                                @endphp
+                                                                @foreach($pembelajaranmps as $pembelajaranmp)
+                                                                <tr>
+                                                                    <td>{{ $no_urut++; }}</td>
+                                                                    <td>{{ $pembelajaranmp->nama_mata_pelajaran }}</td>                                                                    
+                                                                    <td>
+                                                                        @php
+                                                                            $nilai = App\Models\Nilaiakhir::where('pembelajaran_id', $pembelajaranmp->id)->where('anggotarombel_id', $rombelmp->id)->first();
+                                                                        @endphp
+                                                                        {{ $nilai ? $nilai->nilai : '-' }}
+                                                                    </td>
+                                                                </tr>
+                                                                @endforeach
+                                                            @endforeach
                                                     </tbody>
                                                 </table>
                                             </div>

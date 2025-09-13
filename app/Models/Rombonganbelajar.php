@@ -40,4 +40,14 @@ class Rombonganbelajar extends Model
     {
         return $this->belongsTo(Kurikulum::class);
     }
+    
+    public function Pembelajaran()
+    {
+        return $this->hasMany(Pembelajaran::class);
+    }
+
+    public function Anggotarombel()
+    {
+        return $this->hasMany(Anggotarombel::class);
+    }
 }

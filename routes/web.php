@@ -24,6 +24,8 @@ Route::post('/dapo', [DapoController::class, 'update'])->name('dapo')->middlewar
 Route::get('/singkron', [SingkronController::class, 'index'])->middleware('guest');
 Route::get('/indukrombel', [IndukrombelController::class, 'index'])->middleware('guest');
 Route::get('/detailmurid', [IndukrombelController::class, 'detail'])->middleware('guest');
+Route::get('/cetak', [IndukrombelController::class, 'cetak'])->middleware('guest');
+Route::get('/review', [IndukrombelController::class, 'review'])->middleware('guest');
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 Route::get('/admin', [LoginController::class, 'admin'])->name('admin')->middleware('guest');
 Route::post('/login', [LoginController::class, 'authenticate']);

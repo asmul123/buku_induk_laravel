@@ -41,4 +41,9 @@ class Pembelajaran extends Model
     {
         return $this->belongsTo(Matapelajaran::class);
     }
+    
+    public function Rombonganbelajar()
+    {
+        return $this->belongsTo(Rombonganbelajar::class);
+    }
 }

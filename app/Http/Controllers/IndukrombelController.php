@@ -7,6 +7,7 @@ use App\Models\Rombonganbelajar;
 use App\Models\Anggotarombel;
 use App\Models\Pesertadidik;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class IndukrombelController extends Controller
 {
@@ -70,4 +71,47 @@ class IndukrombelController extends Controller
         ];
         return view('detailmurid', $data);
     }
+
+    public function cetak(Request $request)
+    {
+        $pd_id = $request->pd_id;
+        $murid = Pesertadidik::where('id', $pd_id)->first();
+        $rombels = Anggotarombel::where('pesertadidik_id', $pd_id)
+        ->whereHas('rombonganbelajar', function ($query) {
+            $query->where('jenisrombel_id', '1');
+        })
+        ->orderBy('semester_id','asc')->get();
+
+        $pdf = Pdf::loadView('cetak', compact('murid', 'rombels'))
+                  ->setPaper('A3', 'landscape');
+
+        return $pdf->stream('buku_induk - '.$murid->nama.'.pdf');
+    }
+
+    public function review()
+    {
+        $siswa = [
+            'nama' => 'Ahmad Naufal Hilmi',
+            'nis' => '222310506',
+            'nisn' => '0078300443',
+            'ttl' => 'Garut, 12 Agustus 2007',
+            'alamat' => 'Jl. Melong Tengah, RT.5/4, Melong, Kec. Cimahi Selatan',
+            'ayah' => 'Ujang Hendra',
+            'ibu' => 'Rika Sartika',
+            'kelas' => 'X TJK 1',
+            'mulai' => '01 Juli 2022',
+            'asal_sekolah' => 'SMP PLUS AL KOHAR TAROGONG KIDUL',
+            'foto' => public_path('assets/images/no_image.jpg') // path foto
+        ];
+
+        $nilai = [
+            ['mapel' => 'Pendidikan Agama Islam dan Budi Pekerti', 'ganjil' => 83, 'genap' => 86],
+            ['mapel' => 'Pendidikan Pancasila', 'ganjil' => 80, 'genap' => 85],
+            ['mapel' => 'Bahasa Indonesia', 'ganjil' => 80, 'genap' => 83],
+        ];
+
+        
+        return view('cetak', compact('siswa', 'nilai'));
+    }
+   
 }
