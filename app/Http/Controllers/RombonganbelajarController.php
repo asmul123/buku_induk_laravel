@@ -27,7 +27,7 @@ class RombonganbelajarController extends Controller
             'smenu' => 'rombonganbelajar',
             'tapels' => $tapels,
             'sem_id' => $semester_aktif,
-            'no' => 1,
+            'no' => 0,
             'rombonganbelajars' => $rombonganbelajars
         ];
         return view('rombel', $data);

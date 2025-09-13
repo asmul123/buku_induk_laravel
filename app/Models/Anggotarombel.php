@@ -24,4 +24,14 @@ class Anggotarombel extends Model
     {
         return $this->belongsTo(Pesertadidik::class);
     }
+    
+    public function Rombonganbelajar()
+    {
+        return $this->belongsTo(Rombonganbelajar::class);
+    }
+    
+    public function Semester()
+    {
+        return $this->belongsTo(Semester::class);
+    }
 }

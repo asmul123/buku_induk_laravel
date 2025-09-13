@@ -223,24 +223,33 @@
                 </div>
             </div>
             <div class="col-md-7">
-                <div class="card ">
+                <div class="card">
                     <div class="card-header">
-                        <h4>Daftar Nilai</h4>
+                        <h4 class="card-title">Daftar Nilai</h4>
                     </div>
-                    <div class="card-body">
-                        <ul class="nav nav-pills mb-4">
-                            
-                                <li class="nav-item">
-                                <a href="#tab-1" class="nav-link active" data-toggle="tab" aria-expanded="true">20251</a>
-                                </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div id="tab-1" class="tab-pane1">
-                                <div class="row">
-                                    <div class="col-md-12"> 
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
+                                @foreach($rombels as $rombel)
+                                    <a class="list-group-item list-group-item-action{{ $no == 1 ? ' active' : '' }}" id="list-{{ $no }}-list"
+                                        data-toggle="list" href="#list-{{ $no++ }}" role="tab">{{ $rombel->semester_id }}</a>
+                                @endforeach
+                            </div>
+                            @php
+                            $no = 1;
+                            @endphp
+                            <div class="tab-content text-justify">
+                                @foreach($rombels as $rombel)
+                                @php
+                                $thn_kurikulum = date('Y', strtotime($rombel->rombonganbelajar->kurikulum->mulai_berlaku));
+                                $kelompoks = App\Models\Kelompok::where('kurikulum', $thn_kurikulum)->get()
+                                @endphp
+                                <div class="tab-pane fade{{ $no == 1 ? ' show active' : '' }}" id="list-{{ $no++ }}" role="tabpanel"
+                                    aria-labelledby="list-{{ $no-1 }}-list">
+                                    <div class="card">
                                         <div class="card-body">
-                                            Kelas : ....<br>
-                                            Tahun Pelajaran : ....<br>
+                                            Kelas : {{ $rombel->rombonganbelajar->nama }}<br>
+                                            Tahun Pelajaran : {{ $rombel->semester->nama }}<br>
                                         </div>
                                         <div class="card-header">
                                             <h4 class="card-title">Daftar Nilai Peserta Didik</h4>
@@ -256,24 +265,38 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
+                                                        @foreach($kelompoks as $kelompok)
                                                         <tr>
-                                                            <th colspan="4">#</th>
+                                                            <th colspan="4">{{ $kelompok->nama_kelompok }}</th>                                                            
                                                         </tr>
+                                                        @php
+                                                        $no_urut = 1;
+                                                        $pembelajarans = App\Models\Pembelajaran::where('rombonganbelajar_id', $rombel->rombonganbelajar_id)->where('kelompok_id', $kelompok->id)->where('no_urut', '<>', null)->orderBy('no_urut', 'asc')->get();
+                                                        @endphp
+                                                        @foreach($pembelajarans as $pembelajaran)
                                                         <tr>
-                                                                <td>nomap</td>
-                                                                <td>namamapel</td>                                                                    
-                                                                <td>nilai</td>
-                                                            </tr>
+                                                            <td>{{ $no_urut++; }}</td>
+                                                            <td>{{ $pembelajaran->nama_mata_pelajaran }}</td>                                                                    
+                                                            <td>
+                                                                @php
+                                                                    $nilai = App\Models\Nilaiakhir::where('pembelajaran_id', $pembelajaran->id)->where('anggotarombel_id', $rombel->id)->first();
+                                                                @endphp
+                                                                {{ $nilai ? $nilai->nilai : '-' }}
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                        @endforeach
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>                                
+                                </div>                                
+                                @endforeach
+                            </div>                            
+                        </div>
                     </div>
-                </div>                
+                </div>               
             </div>
         </div>
     </section>

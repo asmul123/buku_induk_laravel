@@ -56,7 +56,11 @@ class IndukrombelController extends Controller
     {
         $pd_id = $request->pd_id;
         $murid = Pesertadidik::where('id', $pd_id)->first();
-        $rombels = Rombonganbelajar::where('pesertadidik_id', $pd_id);
+        $rombels = Anggotarombel::where('pesertadidik_id', $pd_id)
+        ->whereHas('rombonganbelajar', function ($query) {
+            $query->where('jenisrombel_id', '1');
+        })
+        ->orderBy('semester_id','asc')->get();
         $data = [
             'menu' => 'bukuinduk',
             'smenu' => 'detail',
