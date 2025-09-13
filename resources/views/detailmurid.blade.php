@@ -40,6 +40,9 @@
                                         </div>
                                         <a href="#" target="_blank" class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">
                                             Unggah Foto</a>
+                                        <a href="#" target="_blank" class="btn btn-rounded btn-primary"><span
+                                            class="btn-icon-left text-primary"><i class="fa fa-print"></i>
+                                        </span>Cetak</a>
                                         <div class="modal fade" id="uploadModal">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
@@ -147,39 +150,37 @@
                                 <td valign="top"></td>
                                 <td valign="top">a. Ayah</td>
                                 <td valign="top">:</td>
-                                <td valign="top">
-                                </td>
+                                <td valign="top">{{ App\Models\Pekerjaan::where('id', $murid->kerja_ayah)->first()->nama }}</td>
                             </tr>
                             <tr>
                                 <td valign="top"></td>
                                 <td valign="top">b. Ibu</td>
                                 <td valign="top">:</td>
-                                <td valign="top">
-                                </td>
+                                <td valign="top">{{ App\Models\Pekerjaan::where('id', $murid->kerja_ibu)->first()->nama }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">9.</td>
                                 <td valign="top">Alamat Rumah </td>
                                 <td valign="top">:</td>
-                                <td valign="top"></td>
+                                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", Kec. ".$murid->kecamatan }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">10.</td>
                                 <td valign="top">Nama Wali Siswa </td>
                                 <td valign="top">:</td>
-                                <td valign="top"></td>
+                                <td valign="top">{{ $murid->nama_wali }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">11.</td>
                                 <td valign="top">Pekerjaan Wali </td>
                                 <td valign="top">:</td>
-                                <td valign="top"></td>
+                                <td valign="top">{{ App\Models\Pekerjaan::where('id', $murid->kerja_wali)->first()->nama }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">12.</td>
                                 <td valign="top">Alamat Rumah Wali </td>
                                 <td valign="top">:</td>
-                                <td valign="top"></td>
+                                <td valign="top">{{ $murid->alamat_wali }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">13.</td>
@@ -191,19 +192,19 @@
                                 <td valign="top"></td>
                                 <td valign="top">a. Di kelas</td>
                                 <td valign="top">:</td>
-                                <td valign="top"></td>
+                                <td valign="top">{{ $murid->diterima_kelas }}</td>
                             </tr>
                             <tr>
                                 <td valign="top"></td>
                                 <td valign="top">b. Mulai tanggal</td>
                                 <td valign="top">:</td>
-                                <td valign="top"></td>
+                                <td valign="top">{{ date('d F Y', strtotime($murid->diterima)) }}</td>
                             </tr>
                             <tr>
                                 <td valign="top"></td>
                                 <td valign="top">c. Asal Sekolah</td>
                                 <td valign="top">:</td>
-                                <td valign="top"></td>
+                                <td valign="top">{{ $murid->sekolah_asal }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">14.</td>
@@ -273,37 +274,6 @@
                         </div>                                
                     </div>
                 </div>                
-            </div>
-        </div>
-    </section>
-    <section class="section">
-        <div class="card">
-            <div class="card-body">
-                <div class="card-header">
-                <h4 class="card-title">Data Buku Induk</h4>
-                </div>
-                <div class="card-content">
-                    <div class="card-body">
-                        
-                        <div class="row">
-                            <div class="col">
-                                <h4 class="card-title">Detail Peserta Didik</h4>
-                                   
-                            </div>
-                            <div class="col">
-                                
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Daftar Nilai Peserta Didik</h4>
-                            <a href="#" target="_blank" class="btn btn-rounded btn-primary"><span
-                                class="btn-icon-left text-primary"><i class="fa fa-print"></i>
-                            </span>Cetak</a>
-                        </div>
-                        
-                    </div>
             </div>
         </div>
     </section>

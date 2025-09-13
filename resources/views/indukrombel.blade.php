@@ -79,7 +79,7 @@
                                     <td>{{ $anggotarombel->nisn }}</td>
                                     <td>{{ $anggotarombel->nama }}</td>
                                     <td>{{ $anggotarombel->jenis_kelamin }}</td>
-                                    <td><a href="{{ url('/detailmurid?ang_id='.$anggotarombel->anggotarombel_id) }}" class="btn btn-success btn-sm">Lihat</a></td>
+                                    <td><a href="{{ url('/detailmurid?pd_id='.$anggotarombel->pesertadidik->id) }}" class="btn btn-success btn-sm">Lihat</a></td>
                                 </tr>
                             @endforeach
                             </tbody>

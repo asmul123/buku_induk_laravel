@@ -54,12 +54,14 @@ class IndukrombelController extends Controller
 
     public function detail(Request $request)
     {
-        $pd_id = Anggotarombel::where('id', $request->ang_id)->first()->pesertadidik_id;
+        $pd_id = $request->pd_id;
         $murid = Pesertadidik::where('id', $pd_id)->first();
+        $rombels = Rombonganbelajar::where('pesertadidik_id', $pd_id);
         $data = [
             'menu' => 'bukuinduk',
             'smenu' => 'detail',
             'murid' => $murid,
+            'rombels' => $rombels,
             'no' => 1
         ];
         return view('detailmurid', $data);
