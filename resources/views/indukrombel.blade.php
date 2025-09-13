@@ -4,9 +4,6 @@
 
 
 <div class="main-content container-fluid">
-    <div class="page-title">
-        <h3>Buku Induk</h3>
-    </div>
     <section class="section">
         <div class="card">
             <div class="card-body">
@@ -77,12 +74,12 @@
                             @foreach($anggotarombels as $anggotarombel)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td></td>
+                                    <td><img src="{{ url('assets/images/avatar/no_image.jpg') }}" width="30%"></td>
                                     <td>{{ $anggotarombel->no_induk }}</td>
                                     <td>{{ $anggotarombel->nisn }}</td>
                                     <td>{{ $anggotarombel->nama }}</td>
                                     <td>{{ $anggotarombel->jenis_kelamin }}</td>
-                                    <td><a href="javascript:void(0)" class="btn btn-success btn-sm" data-toggle="modal" data-target="#lihatPembelajaran" id="btn-lihat-pembelajaran" data-id="{{ $anggotarombel->id }}">Lihat</a></td>
+                                    <td><a href="{{ url('/detailmurid?ang_id='.$anggotarombel->anggotarombel_id) }}" class="btn btn-success btn-sm">Lihat</a></td>
                                 </tr>
                             @endforeach
                             </tbody>

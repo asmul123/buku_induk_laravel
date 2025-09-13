@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Semester;
 use App\Models\Rombonganbelajar;
 use App\Models\Anggotarombel;
+use App\Models\Pesertadidik;
 use Illuminate\Http\Request;
 
 class IndukrombelController extends Controller
@@ -53,9 +54,12 @@ class IndukrombelController extends Controller
 
     public function detail(Request $request)
     {
+        $pd_id = Anggotarombel::where('id', $request->ang_id)->first()->pesertadidik_id;
+        $murid = Pesertadidik::where('id', $pd_id)->first();
         $data = [
             'menu' => 'bukuinduk',
             'smenu' => 'detail',
+            'murid' => $murid,
             'no' => 1
         ];
         return view('detailmurid', $data);

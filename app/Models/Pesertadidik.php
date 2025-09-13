@@ -48,4 +48,9 @@ class Pesertadidik extends Model
         'photo',
         'active'
     ];
+
+    public function Agama()
+    {
+        return $this->belongsTo(Agama::class);
+    }
 }

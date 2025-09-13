@@ -22,7 +22,7 @@ class Rombonganbelajar extends Model
         'nama',
         'ptk_id',
         'tingkat',
-        'jenis_rombel',
+        'jenisrombel_id',
         'kunci_nilai'
     ];
     

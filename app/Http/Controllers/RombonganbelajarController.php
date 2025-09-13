@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rombonganbelajar;
+use App\Models\Semester;
 use App\Models\Anggotarombel;
 use App\Models\Pembelajaran;
 use App\Models\Kelompok;
@@ -13,12 +14,19 @@ class RombonganbelajarController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $rombonganbelajars = Rombonganbelajar::orderBy('jenisrombel_id', 'asc')->orderBy('nama', 'asc')->get();
+    public function index(Request $request)
+    {      
+      $tapels = Semester::orderBy('id', 'desc')->get();
+      $semester_aktif = Semester::where('periode_aktif', '1')->first()->id;
+      if($request->sem_id) {
+        $semester_aktif = $request->sem_id;
+      }
+        $rombonganbelajars = Rombonganbelajar::where('semester_id', $semester_aktif)->orderBy('jenisrombel_id', 'asc')->orderBy('nama', 'asc')->get();
         $data = [
             'menu' => 'referensi',
             'smenu' => 'rombonganbelajar',
+            'tapels' => $tapels,
+            'sem_id' => $semester_aktif,
             'no' => 1,
             'rombonganbelajars' => $rombonganbelajars
         ];
@@ -163,12 +171,17 @@ class RombonganbelajarController extends Controller
                         <tbody>';
             $no = 1;
             foreach ($pembelajarans as $pem){
+              if($pem->ptk){
+                $pengampu = $pem->ptk->nama;
+              } else {
+                $pengampu = '-';
+              }
             echo '
                             <tr>
                               <td class="text-center">' . $no++ . '</td>
                               <td>' . $pem->matapelajaran->nama . '</td>
                               <td><input type="text" name="nama'.$pem->id.'" class="form-control" value="'.$pem->nama_mata_pelajaran.'"></td>
-                              <td>' . $pem->ptk->nama . '</td>
+                              <td>' . $pengampu . '</td>
                               <td>
                               <select name="kel'.$pem->id.'" class="form-control">
                                 <option value="">Pilih Kelompok</option>';

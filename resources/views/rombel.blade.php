@@ -24,6 +24,25 @@
     </div>
     <section class="section">
         <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Pilih Tahun Pelajaran</h4>
+            </div>
+            <div class="card-body">
+                <div class="basic-form">
+                    <form>
+                        <div class="form-group">
+                            <select class="form-control form-control-sm" id="semester_id" name="semester_id">
+                                <option value="{{ url('/rombonganbelajar') }}">Pilih Tahun Pelajaran</option>                                                
+                                @foreach($tapels as $tapel)
+                                <option value="{{ url('/rombonganbelajar/?sem_id=').$tapel->id }}" @if($tapel->id == $sem_id) selected @endif>{{ $tapel->nama }}</option> 
+                                @endforeach                                               
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card">
             <div class="card-body">
                 <div class="card-header">
                 <h4 class="card-title">Data Rombongan Belajar</h4>
@@ -47,7 +66,16 @@
                                 <tr>
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $rombonganbelajar->nama }}</td>
-                                    <td>{{ $rombonganbelajar->ptk->nama }}</td>
+                                    <td>
+                                        @php
+                                            $ptk = App\Models\Ptk::where('id', $rombonganbelajar->ptk_id)->count();
+                                        @endphp
+                                        @if($ptk<>0)
+                                        {{ $rombonganbelajar->ptk->nama }}
+                                        @else
+                                        -
+                                        @endif
+                                    </td>
                                     <td>{{ $rombonganbelajar->jenisrombel->jenis_rombel }}</td>
                                     <td><a href="javascript:void(0)" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#lihatAnggota" id="btn-lihat-anggota" data-id="{{ $rombonganbelajar->id }}">{{ App\Models\Anggotarombel::where('rombonganbelajar_id', $rombonganbelajar->id)->count() }}</a></td>
                                     <td><a href="javascript:void(0)" class="btn btn-success btn-sm" data-toggle="modal" data-target="#lihatPembelajaran" id="btn-lihat-pembelajaran" data-id="{{ $rombonganbelajar->id }}">Lihat</a></td>
@@ -413,5 +441,15 @@
         }
     });
 
+    $(function() {
+        // bind change event to select
+        $('#semester_id').on('change', function() {
+            var url = $(this).val(); // get selected value
+            if (url) { // require a URL
+                window.location = url; // redirect
+            }
+            return false;
+        });
+    });
 </script>
 @endsection
