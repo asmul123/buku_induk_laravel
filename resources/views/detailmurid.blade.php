@@ -41,11 +41,12 @@
                                             <h4 class="text-primary">{{ $murid->nama }}</h4>
                                             <p>{{ $murid->no_induk."/".$murid->nisn }}</p>
                                         </div>
-                                        <a href="#" target="_blank" class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">
+                                        <a href="#" target="_blank" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#uploadModal">
                                             Unggah Foto</a>
-                                        <a href="{{ url('/cetak?pd_id='.$murid->id) }}" target="_blank" class="btn btn-rounded btn-primary"><span
+                                        <a href="{{ url('/cetak?pd_id='.$murid->id) }}" target="_blank" class="btn btn-sm btn-primary"><span
                                             class="btn-icon-left text-primary"><i class="fa fa-print"></i>
                                         </span>Cetak</a>
+                                        <a href="javascript:void(0)" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalGeneral" id="btn-mutasi" data-id="{{ $murid->id }}">Mutasi</a>
                                         <div class="modal fade" id="uploadModal">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
@@ -224,6 +225,25 @@
                                 <td valign="top">-</td>
                             </tr>
                         </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">Keterangan Mutasi</h4>
+                        <div class="d-flex ">
+                             <a href="javascript:void(0)" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalGeneral" id="btn-mutasi" data-id="{{ $murid->id }}">Mutasi</a> 
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        Belum ada data mutasi
+                        {{-- <table>
+                            <tr>
+                                <td width="5%">1.</td>
+                                <td width="40%">Nama Lengkap </td>
+                                <td width="2%">:</td>
+                                <td width="53%" valign="top">{{ $murid->nama }}</td>
+                            </tr>
+                        </table> --}}
                     </div>
                 </div>
             </div>

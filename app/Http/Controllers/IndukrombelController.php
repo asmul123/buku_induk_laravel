@@ -7,6 +7,7 @@ use App\Models\Rombonganbelajar;
 use App\Models\Anggotarombel;
 use App\Models\Pesertadidik;
 use App\Models\Agama;
+use App\Models\Pekerjaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -151,17 +152,22 @@ class IndukrombelController extends Controller
                 <td valign="top">4.</td>
                 <td valign="top">Warga Negara</td>
                 <td valign="top">:</td>
-                <td valign="top"><input type="text" class="form-control" name="warga_negera" value="'.$murid->warga_negera.'"></td>
+                <td valign="top"><input type="text" class="form-control" name="warga_negera" value="'.$murid->warga_negara.'"></td>
             </tr>
             <tr>
                 <td valign="top">5.</td>
                 <td valign="top">Agama </td>
                 <td valign="top">:</td>
                 <td valign="top">
-                <select name="jenis_kelamin" class="form-control">';
+                <select name="agama_id" class="form-control">';
                     $agamas = Agama::all();
                     foreach($agamas as $agama){
-                        echo '<option value="'.$agama->id.'">'.$agama->nama.'</option>';
+                        if($agama->id == $murid->agama_id){
+                            $sel = ' selected';
+                        } else {
+                            $sel = '';
+                        }
+                        echo '<option value="'.$agama->id.'"'.$sel.'>'.$agama->nama.'</option>';
                     }
                 echo '
                 </select>
@@ -169,9 +175,22 @@ class IndukrombelController extends Controller
             </tr>
             <tr>
                 <td valign="top">6.</td>
-                <td valign="top">Alamat/tempat tinggal siswa </td>
+                <td valign="top">Alamat/tempat tinggal</td>
                 <td valign="top">:</td>
-                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", ".$murid->kecamatan }}</td>
+                <td valign="top"><textarea class="form-control" name="alamat">'.$murid->alamat.'</textarea>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">RT</span>
+                        <input type="text" name="rt" class="form-control" value="'.$murid->rt.'">
+                        <span class="input-group-text" id="basic-addon1">RW</span>
+                        <input type="text" name="rw" class="form-control" value="'.$murid->rw.'">
+                        <span class="input-group-text" id="basic-addon1">Ds./Kel</span>
+                        <input type="text" name="desa_kelurahan" class="form-control" value="'.$murid->desa_kelurahan.'">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">Kec.</span>
+                        <input type="text" name="kecamatan" class="form-control" value="'.$murid->kecamatan.'">
+                    </div>
+                </td>
             </tr>
             <tr>
                 <td valign="top">7.</td>
@@ -183,13 +202,13 @@ class IndukrombelController extends Controller
                 <td valign="top"></td>
                 <td valign="top">a. Ayah</td>
                 <td valign="top">:</td>
-                <td valign="top">{{ $murid->nama_ayah }}</td>
+                <td valign="top"><input type="text" class="form-control" name="nama_ayah" value="'.$murid->nama_ayah.'"></td>
             </tr>
             <tr>
                 <td valign="top"></td>
                 <td valign="top">b. Ibu</td>
                 <td valign="top">:</td>
-                <td valign="top">{{ $murid->nama_ibu }}</td>
+                <td valign="top"><input type="text" class="form-control" name="nama_ibu" value="'.$murid->nama_ibu.'"></td>
             </tr>
             <tr>
                 <td valign="top">8.</td>
@@ -201,40 +220,73 @@ class IndukrombelController extends Controller
                 <td valign="top"></td>
                 <td valign="top">a. Ayah</td>
                 <td valign="top">:</td>
-                <td valign="top"></td>
+                <td valign="top">
+                <select name="kerja_ayah" class="form-control">';
+                    $pekerjaans = Pekerjaan::all();
+                    foreach($pekerjaans as $pekerjaan){
+                        if($pekerjaan->id == $murid->kerja_ayah){
+                            $sel = ' selected';
+                        } else {
+                            $sel = '';
+                        }
+                        echo '<option value="'.$pekerjaan->id.'"'.$sel.'>'.$pekerjaan->nama.'</option>';
+                    }
+                echo '
+                </select>
+                </td>
             </tr>
             <tr>
                 <td valign="top"></td>
                 <td valign="top">b. Ibu</td>
                 <td valign="top">:</td>
-                <td valign="top"></td>
+                <td valign="top">
+                <select name="kerja_ibu" class="form-control">';
+                    $pekerjaans = Pekerjaan::all();
+                    foreach($pekerjaans as $pekerjaan){
+                        if($pekerjaan->id == $murid->kerja_ibu){
+                            $sel = ' selected';
+                        } else {
+                            $sel = '';
+                        }
+                        echo '<option value="'.$pekerjaan->id.'"'.$sel.'>'.$pekerjaan->nama.'</option>';
+                    }
+                echo '
+                </select>
+                </td>
             </tr>
             <tr>
                 <td valign="top">9.</td>
-                <td valign="top">Alamat Rumah </td>
+                <td valign="top">Nama Wali Siswa </td>
                 <td valign="top">:</td>
-                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", ".$murid->kecamatan }}</td>
+                <td valign="top"><input type="text" class="form-control" name="nama_wali" value="'.$murid->nama_wali.'"></td>
             </tr>
             <tr>
                 <td valign="top">10.</td>
-                <td valign="top">Nama Wali Siswa </td>
+                <td valign="top">Pekerjaan Wali </td>
                 <td valign="top">:</td>
-                <td valign="top">{{ $murid->nama_wali }}</td>
+                <td valign="top">
+                <select name="kerja_wali" class="form-control">';
+                    $pekerjaans = Pekerjaan::all();
+                    foreach($pekerjaans as $pekerjaan){
+                        if($pekerjaan->id == $murid->kerja_wali){
+                            $sel = ' selected';
+                        } else {
+                            $sel = '';
+                        }
+                        echo '<option value="'.$pekerjaan->id.'"'.$sel.'>'.$pekerjaan->nama.'</option>';
+                    }
+                echo '
+                </select>
+                </td>
             </tr>
             <tr>
                 <td valign="top">11.</td>
-                <td valign="top">Pekerjaan Wali </td>
+                <td valign="top">Alamat Rumah Wali </td>
                 <td valign="top">:</td>
-                <td valign="top"></td>
+                <td valign="top"><input type="text" class="form-control" name="alamat_wali" value="'.$murid->alamat_wali.'"></td>
             </tr>
             <tr>
                 <td valign="top">12.</td>
-                <td valign="top">Alamat Rumah Wali </td>
-                <td valign="top">:</td>
-                <td valign="top">{{ $murid->alamat_wali }}</td>
-            </tr>
-            <tr>
-                <td valign="top">13.</td>
                 <td valign="top">Diterima Menjadi Siswa </td>
                 <td valign="top"></td>
                 <td valign="top"></td>
@@ -243,31 +295,19 @@ class IndukrombelController extends Controller
                 <td valign="top"></td>
                 <td valign="top">a. Di kelas</td>
                 <td valign="top">:</td>
-                <td valign="top">{{ $murid->diterima_kelas }}</td>
+                <td valign="top"><input type="text" class="form-control" name="diterima_kelas" value="'.$murid->diterima_kelas.'"></td>
             </tr>
             <tr>
                 <td valign="top"></td>
                 <td valign="top">b. Mulai tanggal</td>
                 <td valign="top">:</td>
-                <td valign="top"></td>
+                <td valign="top"><input type="date" class="form-control" name="diterima" value="'.$murid->diterima.'"></td>
             </tr>
             <tr>
                 <td valign="top"></td>
                 <td valign="top">c. Asal Sekolah</td>
                 <td valign="top">:</td>
-                <td valign="top">{{ $murid->sekolah_asal }}</td>
-            </tr>
-            <tr>
-                <td valign="top">14.</td>
-                <td valign="top">No. Ijazah </td>
-                <td valign="top">:</td>
-                <td valign="top">-</td>
-            </tr>
-            <tr>
-                <td valign="top">15.</td>
-                <td valign="top">Tanggal Ijazah </td>
-                <td valign="top">:</td>
-                <td valign="top">-</td>
+                <td valign="top"><input type="text" class="form-control" name="sekolah_asal" value="'.$murid->sekolah_asal.'"></td>
             </tr>
         </table>';
     }
