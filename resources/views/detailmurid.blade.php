@@ -114,7 +114,7 @@
                                 <td valign="top">4.</td>
                                 <td valign="top">Warga Negara</td>
                                 <td valign="top">:</td>
-                                <td valign="top">Indonesia</td>
+                                <td valign="top">{{ $murid->warga_negara }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">5.</td>
@@ -351,11 +351,15 @@
             </div>
         </div>
     </section>
+
     <!-- Template Modal -->
     <div class="modal fade text-left w-100" id="modalGeneral" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel16" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
+                
+            <form id="bioForm" method="POST" action="{{ url('/updatebio') }}">
+            @csrf
                 <div class="modal-header">
                 <h4 class="modal-title" id="modal-title">No Title</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -372,7 +376,29 @@
                     <span class="d-none d-sm-block">Tutup</span>
                 </button>
                 </div>
+            </form>
             </div>
+        </div>
+    </div>
+    
+    <!-- Modal Success -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <h5 class="mb-3">Berhasil!</h5>
+                    <p id="pesan">Data berhasil disimpan.</p>
+                    <button type="button" class="btn btn-light mt-2" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay Spinner -->
+    <div id="loadingOverlay" class="d-none">
+        <div class="overlay-content">
+            <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status"></div>
+            <p class="mt-3 text-white">Sedang memproses...</p>
         </div>
     </div>
 </div>
@@ -413,5 +439,38 @@
                     }
                 });
         });
+
+        $("#bioForm").on("submit", function (e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let url = "{{ url('/updatebio') }}";
+        let data = form.serialize();
+
+        // Tampilkan overlay spinner
+        $("#loadingOverlay").removeClass("d-none");
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: data,
+            success: function (response) {
+
+                // Tampilkan modal success
+                document.getElementById('pesan').innerText = "Berhasil menyimpan Data";
+                let successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            },
+            error: function () {
+                alert("Terjadi kesalahan, coba lagi." + error);
+            },
+            complete: function () {
+                // Sembunyikan overlay spinner
+                $("#loadingOverlay").addClass("d-none");
+                window.location.reload();
+            }
+        });
+    });
+
 </script>
 @endsection

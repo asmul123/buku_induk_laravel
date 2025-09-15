@@ -115,6 +115,7 @@ class IndukrombelController extends Controller
         $murid=Pesertadidik::where('id', $request->murid_id)->first();
         
         echo '
+        <input type="hidden" class="form-control" name="id" value="'.$murid->id.'">
         <table>
             <tr>
                 <td width="5%">1.</td>
@@ -152,7 +153,7 @@ class IndukrombelController extends Controller
                 <td valign="top">4.</td>
                 <td valign="top">Warga Negara</td>
                 <td valign="top">:</td>
-                <td valign="top"><input type="text" class="form-control" name="warga_negera" value="'.$murid->warga_negara.'"></td>
+                <td valign="top"><input type="text" class="form-control" name="warga_negara" value="'.$murid->warga_negara.'"></td>
             </tr>
             <tr>
                 <td valign="top">5.</td>
@@ -309,7 +310,42 @@ class IndukrombelController extends Controller
                 <td valign="top">:</td>
                 <td valign="top"><input type="text" class="form-control" name="sekolah_asal" value="'.$murid->sekolah_asal.'"></td>
             </tr>
+            <tr>
+                <td colspan="4" align="right">                
+                    <button type="submit" id="btnSubmit" class="btn btn-primary">
+                        <span id="btnText">Simpan</span>
+                    </button>
+                </td>
+            </tr>
         </table>';
+    }
+    
+    public function updatebio(Request $request)
+    {
+            $data = [
+                'nama' => $request->nama,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'tempat_lahir' => $request->tempat_lahir,
+                'warga_negara' => $request->warga_negara,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'agama_id' => $request->agama_id,
+                'alamat' => $request->alamat,
+                'rt' => $request->rt,
+                'rw' => $request->rw,
+                'desa_kelurahan' => $request->desa_kelurahan,
+                'kecamatan' => $request->kecamatan,
+                'sekolah_asal' => $request->sekolah_asal,
+                'diterima_kelas' => $request->diterima_kelas,
+                'diterima' => $request->diterima,
+                'nama_ayah' => $request->nama_ayah,
+                'nama_ibu' => $request->nama_ibu,
+                'kerja_ayah' => $request->kerja_ayah,
+                'kerja_ibu' => $request->kerja_ibu,
+                'nama_wali' => $request->nama_wali,
+                'alamat_wali' => $request->alamat_wali,
+                'kerja_wali' => $request->kerja_wali,
+            ];
+            Pesertadidik::where('id', $request->id)->update($data);
     }
    
 }

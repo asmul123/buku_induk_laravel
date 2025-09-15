@@ -26,10 +26,10 @@ Route::get('/indukrombel', [IndukrombelController::class, 'index'])->middleware(
 Route::get('/detailmurid', [IndukrombelController::class, 'detail'])->middleware('auth');
 Route::get('/editmurid', [IndukrombelController::class, 'edit'])->middleware('auth');
 Route::get('/cetak', [IndukrombelController::class, 'cetak'])->middleware('auth');
-Route::get('/review', [IndukrombelController::class, 'review'])->middleware('auth');
 Route::post('/upload', [IndukrombelController::class, 'upload'])->middleware('auth');
 Route::get('/login', [LoginController::class, 'admin'])->name('login')->middleware('guest');
 Route::get('/admin', [LoginController::class, 'admin'])->name('admin')->middleware('guest');
+Route::post('/updatebio', [IndukrombelController::class, 'updatebio'])->middleware('auth');
 Route::post('/login', [LoginController::class, 'admin']);
 Route::post('/admin', [LoginController::class, 'authadmin']);
 Route::post('/logout', [LoginController::class, 'logout']);

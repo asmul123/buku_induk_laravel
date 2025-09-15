@@ -390,9 +390,8 @@
                         });
                     }
                 });
-        });
-        
-        
+        });        
+      
     $("#myForm").on("submit", function (e) {
         e.preventDefault();
 

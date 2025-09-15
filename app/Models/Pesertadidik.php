@@ -21,6 +21,7 @@ class Pesertadidik extends Model
         'nik',
         'jenis_kelamin',
         'tempat_lahir',
+        'warga_negara',
         'tanggal_lahir',
         'agama_id',
         'status',
