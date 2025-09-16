@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sekolah;
 use App\Models\Semester;
 use App\Models\Rombonganbelajar;
 use App\Models\Anggotarombel;
 use App\Models\Pesertadidik;
 use App\Models\Agama;
 use App\Models\Pekerjaan;
+use App\Models\Pembelajaran;
+use App\Models\Nilaiakhir;
+use App\Models\Kelompok;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -319,9 +323,89 @@ class IndukrombelController extends Controller
             </tr>
         </table>';
     }
-    
-    public function updatebio(Request $request)
+
+    public function editnilai(Request $request)
     {
+        $rombel = Anggotarombel::where('id', $request->rombel_id)->first();
+        $thn_kurikulum = date('Y', strtotime($rombel->rombonganbelajar->kurikulum->mulai_berlaku));
+        $kelompoks = Kelompok::where('kurikulum', $thn_kurikulum)->get();
+        echo '
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-responsive-sm">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Mata Pelajaran</th>
+                            <th>NA</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                        foreach($kelompoks as $kelompok){
+                            echo '
+                            <tr>
+                                <th colspan="4">'. $kelompok->nama_kelompok .'</th>                                                            
+                            </tr>';
+                            $no_urut = 1;
+                            $pembelajarans = Pembelajaran::where('rombonganbelajar_id', $rombel->rombonganbelajar_id)->where('kelompok_id', $kelompok->id)->where('no_urut', '<>', null)->orderBy('no_urut', 'asc')->get();
+                            foreach($pembelajarans as $pembelajaran) {
+                            echo '
+                            <tr>
+                                <td>'. $no_urut++ .'</td>
+                                <td>'. $pembelajaran->nama_mata_pelajaran .'</td>                                                                    
+                                <td>';
+                                    $nilai = Nilaiakhir::where('pembelajaran_id', $pembelajaran->id)->where('anggotarombel_id', $rombel->id)->first();
+                                    if($nilai){
+                                        $na = $nilai->nilai;
+                                    } else {
+                                        $na = 0;
+                                    }
+                                    echo '<input type="number" class="form-control" name="nilai'.$pembelajaran->id.'" value="'.$na.'">
+                                    <input type="hidden" name="anggotarombel_id" value="'.$request->rombel_id.'">
+                                </td>
+                            </tr>';
+                            }
+                        }
+                            $rombelmps = Anggotarombel::where('pesertadidik_id', $rombel->pesertadidik_id)
+                            ->whereHas('rombonganbelajar', function ($query) {
+                                $query->where('jenisrombel_id', '16');
+                            })->where('semester_id', $rombel->semester_id)->get();
+                            foreach($rombelmps as $rombelmp) {
+                                $pembelajaranmps = Pembelajaran::where('rombonganbelajar_id', $rombelmp->rombonganbelajar_id)->where('no_urut', '<>', null)->orderBy('no_urut', 'asc')->get();
+                                foreach($pembelajaranmps as $pembelajaranmp) {
+                                echo '
+                                <tr>
+                                    <td>'. $no_urut++ .'</td>
+                                    <td>Mapel Pilihan : '. $pembelajaranmp->nama_mata_pelajaran .'</td>                                                                    
+                                    <td>';
+                                        $nilai = Nilaiakhir::where('pembelajaran_id', $pembelajaranmp->id)->where('anggotarombel_id', $rombelmp->id)->first();
+                                        if($nilai){
+                                            $na = $nilai->nilai;
+                                        } else {
+                                            $na = 0;
+                                        }
+                                    echo '<input type="number" class="form-control" name="nilai'.$pembelajaranmp->id.'" value="'.$na.'">
+                                    </td>
+                                </tr>';
+                                }
+                            }
+                    echo '
+                        <tr>
+                            <td colspan="4" align="right">                
+                                <button type="submit" id="btnSubmit" class="btn btn-primary">
+                                    <span id="btnText">Simpan</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>';
+    }
+    
+    public function updateinduk(Request $request)
+    {
+        if($request->id){
             $data = [
                 'nama' => $request->nama,
                 'jenis_kelamin' => $request->jenis_kelamin,
@@ -346,6 +430,70 @@ class IndukrombelController extends Controller
                 'kerja_wali' => $request->kerja_wali,
             ];
             Pesertadidik::where('id', $request->id)->update($data);
+        } else if ($request->anggotarombel_id){
+            $rombel = Anggotarombel::where('id', $request->anggotarombel_id)->first();
+            $thn_kurikulum = date('Y', strtotime($rombel->rombonganbelajar->kurikulum->mulai_berlaku));
+            $kelompoks = Kelompok::where('kurikulum', $thn_kurikulum)->get();
+            $sekolah_id = Sekolah::value('id');
+            foreach($kelompoks as $kelompok){
+                $pembelajarans = Pembelajaran::where('rombonganbelajar_id', $rombel->rombonganbelajar_id)->where('kelompok_id', $kelompok->id)->where('no_urut', '<>', null)->orderBy('no_urut', 'asc')->get();
+                foreach($pembelajarans as $pembelajaran) {
+                    $pemb_id = $pembelajaran->id;
+                    $nilai = $request->{'nilai'.$pemb_id};
+                    $ceknilai = Nilaiakhir::where('pembelajaran_id', $pembelajaran->id)->where('anggotarombel_id', $rombel->id);
+                    if($ceknilai->count() == 0 and $nilai <> 0){
+                        $data = [
+                            'sekolah_id' => $sekolah_id,
+                            'pembelajaran_id' => $pembelajaran->id,
+                            'anggotarombel_id' => $rombel->id,
+                            'kompetensi_id' => '4',
+                            'nilai' => $nilai
+                        ];
+                        Nilaiakhir::create($data);
+                    } else if ($ceknilai->count() >= 1) {
+                        $data = [
+                            'sekolah_id' => $sekolah_id,
+                            'pembelajaran_id' => $pembelajaran->id,
+                            'anggotarombel_id' => $rombel->id,
+                            'kompetensi_id' => '4',
+                            'nilai' => $nilai
+                        ];
+                        Nilaiakhir::where('id', $ceknilai->first()->id);
+                    }
+                }
+            }
+            $rombelmps = Anggotarombel::where('pesertadidik_id', $rombel->pesertadidik_id)
+            ->whereHas('rombonganbelajar', function ($query) {
+                $query->where('jenisrombel_id', '16');
+            })->where('semester_id', $rombel->semester_id)->get();
+            foreach($rombelmps as $rombelmp) {
+                $pembelajaranmps = Pembelajaran::where('rombonganbelajar_id', $rombelmp->rombonganbelajar_id)->where('no_urut', '<>', null)->orderBy('no_urut', 'asc')->get();
+                foreach($pembelajaranmps as $pembelajaranmp) {
+                    $pemb_id = $pembelajaranmp->id;
+                    $nilai = $request->{'nilai'.$pemb_id};
+                    $ceknilai = Nilaiakhir::where('pembelajaran_id', $pembelajaranmp->id)->where('anggotarombel_id', $rombel->id);
+                    if($ceknilai->count() == 0 and $nilai <> 0){
+                        $data = [
+                            'sekolah_id' => $sekolah_id,
+                            'pembelajaran_id' => $pembelajaran->id,
+                            'anggotarombel_id' => $rombel->id,
+                            'kompetensi_id' => '4',
+                            'nilai' => $nilai
+                        ];
+                        Nilaiakhir::create($data);
+                    } else if($ceknilai->count() >= 1) {
+                        $data = [
+                            'sekolah_id' => $sekolah_id,
+                            'pembelajaran_id' => $pembelajaran->id,
+                            'anggotarombel_id' => $rombel->id,
+                            'kompetensi_id' => '4',
+                            'nilai' => $nilai
+                        ];
+                        Nilaiakhir::where('id', $ceknilai->first()->id);
+                    }
+                }
+            }
+        }
     }
    
 }

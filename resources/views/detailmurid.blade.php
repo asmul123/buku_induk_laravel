@@ -279,7 +279,7 @@
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <h4 class="card-title">Daftar Nilai Peserta Didik</h4>
                                             <div class="d-flex">
-                                                <a href="javascript: history.go(-1)" class="btn btn-warning">Edit</a> 
+                                                <a href="javascript:void(0)" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalGeneral" id="btn-edit-nilai" data-id="{{ $rombel->id }}">Edit</a>  
                                             </div>
                                         </div>
                                         <div class="card-body">
@@ -358,7 +358,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 
-            <form id="bioForm" method="POST" action="{{ url('/updatebio') }}">
+            <form id="thisForm" method="POST" action="#">
             @csrf
                 <div class="modal-header">
                 <h4 class="modal-title" id="modal-title">No Title</h4>
@@ -426,29 +426,44 @@
     });
 
     $('body').on('click', '#btn-edit-biodata', function () {
-                let murid_id = $(this).data('id');
-                
-                //fetch detail post with ajax
-                $.ajax({
-                    url: "{{ url('/editmurid?murid_id=') }}"+murid_id+"&aksi=edit",
-                    type: "GET",
-                    cache: false,
-                    success:function(response){
-                        $('#modal-title').html("Edit Biodata");
-                        $('#modal-body').html(response);
-                    }
-                });
-        });
+            let murid_id = $(this).data('id');
+            
+            //fetch detail post with ajax
+            $.ajax({
+                url: "{{ url('/editmurid?murid_id=') }}"+murid_id+"&aksi=edit",
+                type: "GET",
+                cache: false,
+                success:function(response){
+                    $('#modal-title').html("Edit Biodata");
+                    $('#modal-body').html(response);
+                }
+            });
+    });
 
-        $("#bioForm").on("submit", function (e) {
-        e.preventDefault();
+    $('body').on('click', '#btn-edit-nilai', function () {
+            let rombel_id = $(this).data('id');
+            
+            //fetch detail post with ajax
+            $.ajax({
+                url: "{{ url('/editnilai?rombel_id=') }}"+rombel_id,
+                type: "GET",
+                cache: false,
+                success:function(response){
+                    $('#modal-title').html("Edit Nilai");
+                    $('#modal-body').html(response);
+                }
+            });
+    });
 
-        let form = $(this);
-        let url = "{{ url('/updatebio') }}";
-        let data = form.serialize();
+    $("#thisForm").on("submit", function (e) {
+    e.preventDefault();
 
-        // Tampilkan overlay spinner
-        $("#loadingOverlay").removeClass("d-none");
+    let form = $(this);
+    let url = "{{ url('/updateinduk') }}";
+    let data = form.serialize();
+
+    // Tampilkan overlay spinner
+    $("#loadingOverlay").removeClass("d-none");
 
         $.ajax({
             url: url,
