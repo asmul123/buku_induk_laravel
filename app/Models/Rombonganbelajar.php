@@ -50,4 +50,9 @@ class Rombonganbelajar extends Model
     {
         return $this->hasMany(Anggotarombel::class);
     }
+
+    public function Jurusan()
+    {
+        return $this->belongsTo(Jurusan::class);
+    }
 }
