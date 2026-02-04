@@ -8,6 +8,8 @@ use App\Models\Ptk;
 use App\Models\Rombonganbelajar;
 use App\Models\Anggotarombel;
 use App\Models\Pembelajaran;
+use App\Models\Semester;
+use App\Models\Matapelajaran;
 
 use Illuminate\Support\Facades\Http;
 
@@ -16,72 +18,92 @@ class SingkronController extends Controller
     
     public function index()
     {
-        
-        $dapodik = Dapodik::where('id', '1')->first();
-        $skldbcount = Sekolah::get()->count();
-        $ptkdbcount = Ptk::get()->count();
-        $rombeldbcount = Rombonganbelajar::get()->count();
-        $pddbcount = Pesertadidik::get()->count();
-        $sekolah = Http::withHeaders([
-            'Authorization' => 'Bearer '.$dapodik->token,
-            ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
-                'npsn' => $dapodik->npsn
-            ]);
-        $pendidik = Http::withHeaders([
-            'Authorization' => 'Bearer '.$dapodik->token,
-            ])->get("http://".$dapodik->address.":5774/WebService/getGtk", [
-            'npsn' => $dapodik->npsn
-            ]);
+        try {
+            $dapodik = Dapodik::where('id', '1')->first();
+            
+            if(!$dapodik || !$dapodik->token || !$dapodik->address || !$dapodik->npsn){
+                return redirect('/dapo')->with('error', 'Harap lakukan pengaturan Dapodik dengan benar!');
+            }
+            
+            $semesterAktif = Semester::where('periode_aktif', 1)->first();
+            $semester_id = $semesterAktif ? $semesterAktif->id : null;
+            
+            $skldbcount = Sekolah::get()->count();
+            $ptkdbcount = Ptk::get()->count();
+            $rombeldbcount = Rombonganbelajar::get()->count();
+            $pddbcount = Pesertadidik::get()->count();
+            $sekolah = Http::timeout(10)->withHeaders([
+                'Authorization' => 'Bearer '.$dapodik->token,
+                ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
+                    'npsn' => $dapodik->npsn,
+                    'semester_id' => $semester_id
+                ]);
+            
+            if(!$sekolah->successful()){
+                return redirect('/dapo')->with('error', 'Tidak dapat terhubung ke server Dapodik. Harap periksa pengaturan Dapodik!');
+            }
+            
+            $pendidik = Http::timeout(10)->withHeaders([
+                'Authorization' => 'Bearer '.$dapodik->token,
+                ])->get("http://".$dapodik->address.":5774/WebService/getGtk", [
+                'npsn' => $dapodik->npsn,
+                'semester_id' => $semester_id
+                ]);
 
-        $rombongan_belajar = Http::withHeaders([
-            'Authorization' => 'Bearer '.$dapodik->token,
-            ])->get("http://".$dapodik->address.":5774/WebService/getRombonganBelajar", [
-            'npsn' => $dapodik->npsn
-            ]);
-        
-        $peserta_didik = Http::withHeaders([
-            'Authorization' => 'Bearer '.$dapodik->token,
-            ])->get("http://".$dapodik->address.":5774/WebService/getPesertaDidik", [
-            'npsn' => $dapodik->npsn
-            ]);
+            $rombongan_belajar = Http::timeout(10)->withHeaders([
+                'Authorization' => 'Bearer '.$dapodik->token,
+                ])->get("http://".$dapodik->address.":5774/WebService/getRombonganBelajar", [
+                'npsn' => $dapodik->npsn,
+                'semester_id' => $semester_id
+                ]);
+            
+            $peserta_didik = Http::timeout(10)->withHeaders([
+                'Authorization' => 'Bearer '.$dapodik->token,
+                ])->get("http://".$dapodik->address.":5774/WebService/getPesertaDidik", [
+                'npsn' => $dapodik->npsn,
+                'semester_id' => $semester_id
+                ]);
 
-        $skl = $sekolah->json();
-        $sklcount = count($skl['rows']);
-        $pd = $peserta_didik->json();
-        $pdcount = count($pd['rows']);
-        $ptk = $pendidik->json();
-        $ptkcount = count($ptk['rows']);
-        $gurucount = array_count_values(array_column($ptk['rows'], 'jenis_ptk_id'))['92'];
-        $tucount = array_count_values(array_column($ptk['rows'], 'jenis_ptk_id'))['93'];
-        $rombel = $rombongan_belajar->json();
-        $rombelcount = count($rombel['rows']);
+            $skl = $sekolah->json();
+            $sklcount = count($skl['rows']);
+            $pd = $peserta_didik->json();
+            $pdcount = count($pd['rows']);
+            $ptk = $pendidik->json();
+            $ptkcount = count($ptk['rows']);
+            $gurucount = isset(array_count_values(array_column($ptk['rows'], 'jenis_ptk_id'))['92']) ? array_count_values(array_column($ptk['rows'], 'jenis_ptk_id'))['92'] : 0;
+            $tucount = isset(array_count_values(array_column($ptk['rows'], 'jenis_ptk_id'))['93']) ? array_count_values(array_column($ptk['rows'], 'jenis_ptk_id'))['93'] : 0;
+            $rombel = $rombongan_belajar->json();
+            $rombelcount = count($rombel['rows']);
 
-        $data = [
-            'menu' => 'singkron',
-            'smenu' => 'dapodik',
-            'sklcount' => $sklcount,
-            'pdcount' => $pdcount,
-            'ptkcount' => $ptkcount,
-            'rombelcount' => $rombelcount,
-            'skldbcount' => $skldbcount,
-            'ptkdbcount' => $ptkdbcount,
-            'rombeldbcount' => $rombeldbcount,
-            'pddbcount' => $pddbcount
-        ];
-        return view('singkron', $data);
-        // foreach($data as $d){
-        //     echo $d['rombongan_belajar_id']." - ".$d['nama']."<br>";
-        // }
-        // dd($data);
+            $data = [
+                'menu' => 'singkron',
+                'smenu' => 'dapodik',
+                'sklcount' => $sklcount,
+                'pdcount' => $pdcount,
+                'ptkcount' => $ptkcount,
+                'rombelcount' => $rombelcount,
+                'skldbcount' => $skldbcount,
+                'ptkdbcount' => $ptkdbcount,
+                'rombeldbcount' => $rombeldbcount,
+                'pddbcount' => $pddbcount
+            ];
+            return view('singkron', $data);
+        } catch (\Exception $e) {
+            return redirect('/dapo')->with('error', 'Terjadi kesalahan saat menghubungi server Dapodik. Harap periksa pengaturan Dapodik dengan benar! Error: ' . $e->getMessage());
+        }
     }
 
     public function sekolah()
     {
         $dapodik = Dapodik::where('id', '1')->first();
+        $semesterAktif = Semester::where('periode_aktif', 1)->first();
+        $semester_id = $semesterAktif ? $semesterAktif->id : null;
+        
         $sekolah = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
-                'npsn' => $dapodik->npsn
+                'npsn' => $dapodik->npsn,
+                'semester_id' => $semester_id
             ]);
         $skl = $sekolah->json()['rows'];
         $cekskl = Sekolah::where('id', $skl['sekolah_id'])->get()->count();
@@ -138,10 +160,14 @@ class SingkronController extends Controller
     public function ptk()
     {
         $dapodik = Dapodik::where('id', '1')->first();
+        $semesterAktif = Semester::where('periode_aktif', 1)->first();
+        $semester_id = $semesterAktif ? $semesterAktif->id : null;
+        
         $sekolah = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
-                'npsn' => $dapodik->npsn
+                'npsn' => $dapodik->npsn,
+                'semester_id' => $semester_id
             ]);
         $sekolah_id = $sekolah->json()['rows']['sekolah_id'];
         $update = 0;
@@ -149,7 +175,8 @@ class SingkronController extends Controller
         $ptk = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getGtk", [
-                'npsn' => $dapodik->npsn
+                'npsn' => $dapodik->npsn,
+                'semester_id' => $semester_id
             ]);
         $ptks = $ptk->json()['rows'];
         foreach($ptks as $ptk){
@@ -195,10 +222,14 @@ class SingkronController extends Controller
     public function pd()
     {
         $dapodik = Dapodik::where('id', '1')->first();
+        $semesterAktif = Semester::where('periode_aktif', 1)->first();
+        $semester_id = $semesterAktif ? $semesterAktif->id : null;
+        
         $sekolah = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
-                'npsn' => $dapodik->npsn
+                'npsn' => $dapodik->npsn,
+                'semester_id' => $semester_id
             ]);
         $sekolah_id = $sekolah->json()['rows']['sekolah_id'];
         $update = 0;
@@ -208,7 +239,8 @@ class SingkronController extends Controller
         $pesertadidik = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getPesertaDidik", [
-                'npsn' => $dapodik->npsn
+                'npsn' => $dapodik->npsn,
+                'semester_id' => $semester_id
             ]);
         $pds = $pesertadidik->json()['rows'];
         foreach($pds as $pd){
@@ -291,10 +323,14 @@ class SingkronController extends Controller
     public function rombel()
     {
         $dapodik = Dapodik::where('id', '1')->first();
+        $semesterAktif = Semester::where('periode_aktif', 1)->first();
+        $semester_id = $semesterAktif ? $semesterAktif->id : null;
+        
         $sekolah = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getSekolah", [
-                'npsn' => $dapodik->npsn
+                'npsn' => $dapodik->npsn,
+                'semester_id' => $semester_id
             ]);
         $sekolah_id = $sekolah->json()['rows']['sekolah_id'];
         $update = 0;
@@ -303,10 +339,12 @@ class SingkronController extends Controller
         $addpem = 0;
         $updateang = 0;
         $addang = 0;
+        $addmapel = 0;
         $rombel = Http::withHeaders([
             'Authorization' => 'Bearer '.$dapodik->token,
             ])->get("http://".$dapodik->address.":5774/WebService/getRombonganBelajar", [
-                'npsn' => $dapodik->npsn
+                'npsn' => $dapodik->npsn,
+                'semester_id' => $semester_id
             ]);
         $rombels = $rombel->json()['rows'];
         foreach($rombels as $r){
@@ -375,6 +413,23 @@ class SingkronController extends Controller
             foreach($pembelajarans as $p){
                 $cekpembelajaran = Pembelajaran::where('id', $p['pembelajaran_id'])->get()->count();
                 if($p['induk_pembelajaran_id'] == null){
+                    // Cek apakah mata pelajaran sudah ada di referensi
+                    $cekMapel = Matapelajaran::where('id', $p['mata_pelajaran_id'])->count();
+                    if($cekMapel == 0){
+                        // Jika mata pelajaran belum ada, tambahkan otomatis
+                        $dataMapel = [
+                            'id' => $p['mata_pelajaran_id'],
+                            'nama' => $p['mata_pelajaran_id_str'],
+                            'pilihan_sekolah' => 1,
+                            'pilihan_buku' => 0,
+                            'pilihan_kepengawasan' => 0,
+                            'pilihan_evaluasi' => 0,
+                            'jurusan_id' => $r['jurusan_id'] ?? null
+                        ];
+                        Matapelajaran::create($dataMapel);
+                        $addmapel++;
+                    }
+                    
                     if($cekpembelajaran >= 1){
                         $data = [
                             'sekolah_id' => $sekolah_id,
@@ -402,6 +457,6 @@ class SingkronController extends Controller
                 }
             }
         }
-        return redirect()->back()->with('success', 'Berhasil Menambah '. $add.' Rombel, dan Mengubah '.$update.' data Rombel, Menambah '. $addang .' Anggota Rombel, dan Mengubah '.$updateang.' data Anggota Rombel, Menambah '. $addpem .' Pembelajaran, dan Mengubah '.$updatepem.' data Pembelajaran');
+        return redirect()->back()->with('success', 'Berhasil Menambah '. $add.' Rombel, dan Mengubah '.$update.' data Rombel, Menambah '. $addang .' Anggota Rombel, dan Mengubah '.$updateang.' data Anggota Rombel, Menambah '. $addpem .' Pembelajaran, dan Mengubah '.$updatepem.' data Pembelajaran, Menambah '.$addmapel.' Mata Pelajaran baru');
     }
 }

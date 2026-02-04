@@ -53,11 +53,11 @@
                         <i data-feather="list" width="20"></i> 
                         <span>Buku Induk</span>
                     </a>                    
-                    <ul class="submenu {{ ($smenu === 'rombel') ? 'active' : '' }}">                        
-                        <li>
+                    <ul class="submenu {{ ($smenu === 'indukrombel' || $smenu === 'indukmurid') ? 'active' : '' }}">                        
+                        <li class="{{ ($smenu === 'indukrombel') ? 'active' : '' }}">
                             <a href="{{ url('/indukrombel') }}">Per Rombel</a>
                         </li>
-                        <li>
+                        <li class="{{ ($smenu === 'indukmurid') ? 'active' : '' }}">
                             <a href="{{ url('/indukmurid') }}">Per Murid</a>
                         </li>
                     </ul>
@@ -89,6 +89,12 @@
                             <a href="{{ url('/semester') }}">Semester Aktif</a>
                         </li>
                     </ul>
+                </li>
+                <li class="sidebar-item {{ ($menu === 'akun') ? 'active' : '' }}">
+                    <a href="{{ url('/akun') }}" class='sidebar-link'>
+                        <i data-feather="user" width="20"></i> 
+                        <span>Akun Saya</span>
+                    </a>
                 </li>
                 <li class="sidebar-item">
                     <form action="{{ url('/') }}/logout" method="POST" id="form-logout">

@@ -13,7 +13,13 @@ class Semester extends Model
     protected $keyType = 'string'; // kunci utama bukan integer
 
     protected $fillable = [
-        'id'
+        'id',
+        'tahunajaran_id',
+        'nama',
+        'semester',
+        'periode_aktif',
+        'tanggal_mulai',
+        'tanggal_selesai'
     ];
     
 }

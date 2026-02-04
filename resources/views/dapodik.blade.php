@@ -73,5 +73,40 @@
     </section>
 </div>
 
+<!-- Modal Error Dapodik -->
+<div class="modal fade" id="modalErrorDapodik" tabindex="-1" role="dialog" aria-labelledby="modalErrorDapodikLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title text-white" id="modalErrorDapodikLabel">
+                    <i class="fa fa-exclamation-triangle"></i> Peringatan
+                </h5>
+            </div>
+            <div class="modal-body text-center">
+                <div class="mb-3">
+                    <i class="fa fa-times-circle text-danger" style="font-size: 60px;"></i>
+                </div>
+                <h5 class="mb-3">Koneksi Dapodik Gagal!</h5>
+                <p class="text-muted">{{ session('error') ?? 'Harap lakukan pengaturan Dapodik dengan benar sebelum melakukan sinkronisasi data.' }}</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    <i class="fa fa-cog"></i> Atur Sekarang
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
     
+@endsection
+
+@section('modulfoot')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        @if(session('error'))
+            $('#modalErrorDapodik').modal('show');
+        @endif
+    });
+</script>
 @endsection

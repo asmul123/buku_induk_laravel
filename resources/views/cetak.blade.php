@@ -308,6 +308,49 @@
                             @endif
                         @endforeach
                         @endforeach
+                            @php
+                            $pembelajarans = App\Models\Pembelajaran::with('rombonganbelajar')
+                            ->whereHas('rombonganbelajar.anggotarombel', function($q) use ($pesertaId) {
+                                $q->where('pesertadidik_id', $pesertaId);
+                            })->whereHas('rombonganbelajar', function($q) {
+                                $q->where('jenisrombel_id', '16');
+                            })->where('kelompok_id', $kelompok->id)
+                            ->where('no_urut', '<>', null)
+                            ->orderBy('no_urut', 'asc')->get()->groupBy('matapelajaran_id');
+                            @endphp
+                        @foreach($pembelajarans as $pembelajaran => $items)
+                            @php
+                                $mapel_id = $items->first()->matapelajaran_id;
+                            $cek_nilai_akhir = App\Models\Nilaiakhir::with('pembelajaran')
+                            ->whereHas('pembelajaran', function($q) use ($mapel_id){
+                                $q->where('matapelajaran_id', $mapel_id);
+                            })->with('anggotarombel')
+                            ->whereHas('anggotarombel', function($q) use ($pesertaId){
+                                $q->where('pesertadidik_id', $pesertaId);
+                            })->count();
+                            @endphp
+
+                            @if($cek_nilai_akhir <> 0)
+                            <tr>
+                                <td align="center">{{ $no_urut++ }}</td>
+                                <td>{{ $items->first()->nama_mata_pelajaran }}</td>
+                                @foreach($rombels as $rombel)
+                                @php
+                                    $pembelajaranini = App\Models\Pembelajaran::where('matapelajaran_id', $mapel_id)->where('rombonganbelajar_id', $rombel->rombonganbelajar_id)->where('no_urut', '<>', null)->first();
+                                    if($pembelajaranini){
+                                        $pembelajaran_id = $pembelajaranini->id;
+                                        $nilai = App\Models\Nilaiakhir::where('pembelajaran_id', $pembelajaran_id)->where('anggotarombel_id', $rombel->id)->first();
+                                        $nilai ? ${'tot'.$rombel->semester_id} = ${'tot'.$rombel->semester_id} + $nilai->nilai : false;
+                                        $nilai ? ${'jmp'.$rombel->semester_id}++ : false;
+                                    } else {
+                                        $nilai = '';
+                                    }
+                                @endphp                            
+                                <td align="center">{{ $nilai ? $nilai->nilai : '-' }}</td>
+                                @endforeach
+                            </tr>
+                            @endif
+                        @endforeach
                         <tr>
                             <td colspan="2">Jumlah Nilai</td>
                             @foreach($rombels as $rombel)

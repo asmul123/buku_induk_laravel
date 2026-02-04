@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Role;
 
@@ -23,7 +24,7 @@ class UserController extends Controller
     public function ubahpassword()
     {
         return view('akun', [
-            'menu' => '',
+            'menu' => 'akun',
             'smenu' => '',
         ]);
     }
@@ -46,6 +47,54 @@ class UserController extends Controller
         } else {
             return redirect()->back()->with('failed', 'Kata sandi saat ini salah');
         }
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+        ]);
+
+        $user = User::findOrFail(Auth::user()->id);
+        
+        // Cek jika email sudah digunakan user lain
+        $existingUser = User::where('email', $request->email)->where('id', '!=', $user->id)->first();
+        if ($existingUser) {
+            return redirect()->back()->with('failed', 'Email sudah digunakan oleh pengguna lain');
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        return redirect()->back()->with('success_profile', 'Profil berhasil diperbarui');
+    }
+
+    public function updatePhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+        ]);
+
+        $user = User::findOrFail(Auth::user()->id);
+
+        // Hapus foto lama jika ada
+        if ($user->photo && file_exists(public_path('storage/photos/' . $user->photo))) {
+            unlink(public_path('storage/photos/' . $user->photo));
+        }
+
+        // Upload foto baru
+        $file = $request->file('photo');
+        $filename = time() . '_' . Auth::user()->id . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('storage/photos'), $filename);
+
+        $user->update([
+            'photo' => $filename,
+        ]);
+
+        return redirect()->back()->with('success_photo', 'Foto profil berhasil diperbarui');
     }
 
     public function store(Request $request)
