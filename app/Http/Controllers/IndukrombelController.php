@@ -474,12 +474,12 @@ class IndukrombelController extends Controller
                 foreach($pembelajaranmps as $pembelajaranmp) {
                     $pemb_id = $pembelajaranmp->id;
                     $nilai = $request->{'nilai'.$pemb_id};
-                    $ceknilai = Nilaiakhir::where('pembelajaran_id', $pembelajaranmp->id)->where('anggotarombel_id', $rombel->id);
+                    $ceknilai = Nilaiakhir::where('pembelajaran_id', $pembelajaranmp->id)->where('anggotarombel_id', $rombelmp->id);
                     if($ceknilai->count() == 0 and $nilai <> 0){
                         $data = [
                             'sekolah_id' => $sekolah_id,
-                            'pembelajaran_id' => $pembelajaran->id,
-                            'anggotarombel_id' => $rombel->id,
+                            'pembelajaran_id' => $pembelajaranmp->id,
+                            'anggotarombel_id' => $rombelmp->id,
                             'kompetensi_id' => '4',
                             'nilai' => $nilai
                         ];
@@ -487,8 +487,8 @@ class IndukrombelController extends Controller
                     } else if($ceknilai->count() >= 1) {
                         $data = [
                             'sekolah_id' => $sekolah_id,
-                            'pembelajaran_id' => $pembelajaran->id,
-                            'anggotarombel_id' => $rombel->id,
+                            'pembelajaran_id' => $pembelajaranmp->id,
+                            'anggotarombel_id' => $rombelmp->id,
                             'kompetensi_id' => '4',
                             'nilai' => $nilai
                         ];
