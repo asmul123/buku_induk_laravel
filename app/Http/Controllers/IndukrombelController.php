@@ -14,8 +14,10 @@ use App\Models\Nilaiakhir;
 use App\Models\Kelompok;
 use App\Models\Absensi;
 use App\Models\Kenaikan;
+use App\Models\Matapelajaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -61,6 +63,63 @@ class IndukrombelController extends Controller
             'anggotarombels' => $anggotarombels
         ];
         return view('indukrombel', $data);
+    }
+
+    public function indukmurid(Request $request)
+    {
+        // Ambil daftar tahun ajaran yang unik dari semester (untuk angkatan)
+        $angkatans = Semester::select('tahunajaran_id')
+            ->distinct()
+            ->orderBy('tahunajaran_id', 'desc')
+            ->get();
+
+        $angkatan_id = $request->angkatan_id ?? "";
+        $pesertadidiks = "";
+
+        if($angkatan_id != ""){
+            // Ambil semester ganjil dari tahun ajaran yang dipilih (semester masuk)
+            $semester_masuk = Semester::where('tahunajaran_id', $angkatan_id)
+                ->where('semester', 1)
+                ->first();
+            
+            if($semester_masuk){
+                // Ambil peserta didik yang pertama kali terdaftar di semester tersebut
+                // dengan mengambil yang memiliki rombel kelas 10 di tahun ajaran tersebut
+                $pesertadidiks = Pesertadidik::select('pesertadidiks.*')
+                    ->join('anggotarombels', 'pesertadidiks.id', '=', 'anggotarombels.pesertadidik_id')
+                    ->join('rombonganbelajars', 'anggotarombels.rombonganbelajar_id', '=', 'rombonganbelajars.id')
+                    ->join('semesters', 'anggotarombels.semester_id', '=', 'semesters.id')
+                    ->where('semesters.tahunajaran_id', $angkatan_id)
+                    ->where('semesters.semester', 1) // Semester ganjil
+                    ->where('rombonganbelajars.jenisrombel_id', 1) // Rombel reguler
+                    ->where('rombonganbelajars.tingkat', 10) // Kelas 10 (asumsi SMA)
+                    ->distinct()
+                    ->orderBy('pesertadidiks.no_induk', 'asc')
+                    ->get();
+                
+                // Jika tidak ada data kelas 10, coba ambil semua siswa dari tahun ajaran tersebut
+                if($pesertadidiks->count() == 0){
+                    $pesertadidiks = Pesertadidik::select('pesertadidiks.*')
+                        ->join('anggotarombels', 'pesertadidiks.id', '=', 'anggotarombels.pesertadidik_id')
+                        ->join('semesters', 'anggotarombels.semester_id', '=', 'semesters.id')
+                        ->where('semesters.tahunajaran_id', $angkatan_id)
+                        ->where('semesters.semester', 1)
+                        ->distinct()
+                        ->orderBy('pesertadidiks.no_induk', 'asc')
+                        ->get();
+                }
+            }
+        }
+
+        $data = [
+            'menu' => 'bukuinduk',
+            'smenu' => 'indukmurid',
+            'no' => 1,
+            'angkatans' => $angkatans,
+            'angkatan_id' => $angkatan_id,
+            'pesertadidiks' => $pesertadidiks
+        ];
+        return view('indukmurid', $data);
     }
 
     public function detail(Request $request)
@@ -132,6 +191,23 @@ class IndukrombelController extends Controller
             </tr>
             <tr>
                 <td valign="top">2.</td>
+                <td valign="top">No. Induk / NISN </td>
+                <td valign="top">:</td>
+                <td valign="top">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="no_induk" value="'.$murid->no_induk.'" placeholder="No. Induk">
+                        <input type="text" class="form-control" name="nisn" value="'.$murid->nisn.'" placeholder="NISN">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">3.</td>
+                <td valign="top">NIK </td>
+                <td valign="top">:</td>
+                <td valign="top"><input type="text" class="form-control" name="nik" value="'.$murid->nik.'"></td>
+            </tr>
+            <tr>
+                <td valign="top">4.</td>
                 <td valign="top">Jenis Kelamin </td>
                 <td valign="top">:</td>
                 <td valign="top">
@@ -147,7 +223,7 @@ class IndukrombelController extends Controller
                 </td>
             </tr>
             <tr>
-                <td valign="top">3.</td>
+                <td valign="top">5.</td>
                 <td valign="top">Tempat, Tanggal Lahir </td>
                 <td valign="top">:</td>
                 <td valign="top"><div class="input-group">
@@ -157,13 +233,13 @@ class IndukrombelController extends Controller
                 </td>
             </tr>
             <tr>
-                <td valign="top">4.</td>
-                <td valign="top">Warga Negara</td>
+                <td valign="top">6.</td>
+                <td valign="top">Warga Negara </td>
                 <td valign="top">:</td>
-                <td valign="top"><input type="text" class="form-control" name="warga_negara" value="'.$murid->warga_negara.'"></td>
+                <td valign="top"><input type="text" class="form-control" name="warga_negara" value="'.$murid->warga_negara.'" placeholder="Indonesia"></td>
             </tr>
             <tr>
-                <td valign="top">5.</td>
+                <td valign="top">7.</td>
                 <td valign="top">Agama </td>
                 <td valign="top">:</td>
                 <td valign="top">
@@ -182,26 +258,47 @@ class IndukrombelController extends Controller
                 </td>
             </tr>
             <tr>
-                <td valign="top">6.</td>
+                <td valign="top">8.</td>
+                <td valign="top">Anak Ke </td>
+                <td valign="top">:</td>
+                <td valign="top"><input type="number" class="form-control" name="anak_ke" value="'.$murid->anak_ke.'" min="1"></td>
+            </tr>
+            <tr>
+                <td valign="top">9.</td>
                 <td valign="top">Alamat/tempat tinggal</td>
                 <td valign="top">:</td>
                 <td valign="top"><textarea class="form-control" name="alamat">'.$murid->alamat.'</textarea>
                     <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1">RT</span>
+                        <span class="input-group-text">RT</span>
                         <input type="text" name="rt" class="form-control" value="'.$murid->rt.'">
-                        <span class="input-group-text" id="basic-addon1">RW</span>
+                        <span class="input-group-text">RW</span>
                         <input type="text" name="rw" class="form-control" value="'.$murid->rw.'">
-                        <span class="input-group-text" id="basic-addon1">Ds./Kel</span>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text">Ds./Kel</span>
                         <input type="text" name="desa_kelurahan" class="form-control" value="'.$murid->desa_kelurahan.'">
                     </div>
                     <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1">Kec.</span>
+                        <span class="input-group-text">Kec.</span>
                         <input type="text" name="kecamatan" class="form-control" value="'.$murid->kecamatan.'">
+                        <span class="input-group-text">Kode Pos</span>
+                        <input type="text" name="kode_pos" class="form-control" value="'.$murid->kode_pos.'">
                     </div>
                 </td>
             </tr>
             <tr>
-                <td valign="top">7.</td>
+                <td valign="top">10.</td>
+                <td valign="top">No. Telp / Email </td>
+                <td valign="top">:</td>
+                <td valign="top">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="no_telp" value="'.$murid->no_telp.'" placeholder="No. Telp">
+                        <input type="email" class="form-control" name="email" value="'.$murid->email.'" placeholder="Email">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">11.</td>
                 <td valign="top">Nama Orang Tua </td>
                 <td valign="top"></td>
                 <td valign="top"></td>
@@ -219,7 +316,7 @@ class IndukrombelController extends Controller
                 <td valign="top"><input type="text" class="form-control" name="nama_ibu" value="'.$murid->nama_ibu.'"></td>
             </tr>
             <tr>
-                <td valign="top">8.</td>
+                <td valign="top">12.</td>
                 <td valign="top">Pekerjaan </td>
                 <td valign="top"></td>
                 <td valign="top"></td>
@@ -229,7 +326,8 @@ class IndukrombelController extends Controller
                 <td valign="top">a. Ayah</td>
                 <td valign="top">:</td>
                 <td valign="top">
-                <select name="kerja_ayah" class="form-control">';
+                <select name="kerja_ayah" class="form-control">
+                    <option value="">-- Pilih Pekerjaan --</option>';
                     $pekerjaans = Pekerjaan::all();
                     foreach($pekerjaans as $pekerjaan){
                         if($pekerjaan->id == $murid->kerja_ayah){
@@ -248,8 +346,8 @@ class IndukrombelController extends Controller
                 <td valign="top">b. Ibu</td>
                 <td valign="top">:</td>
                 <td valign="top">
-                <select name="kerja_ibu" class="form-control">';
-                    $pekerjaans = Pekerjaan::all();
+                <select name="kerja_ibu" class="form-control">
+                    <option value="">-- Pilih Pekerjaan --</option>';
                     foreach($pekerjaans as $pekerjaan){
                         if($pekerjaan->id == $murid->kerja_ibu){
                             $sel = ' selected';
@@ -263,18 +361,18 @@ class IndukrombelController extends Controller
                 </td>
             </tr>
             <tr>
-                <td valign="top">9.</td>
+                <td valign="top">13.</td>
                 <td valign="top">Nama Wali Siswa </td>
                 <td valign="top">:</td>
                 <td valign="top"><input type="text" class="form-control" name="nama_wali" value="'.$murid->nama_wali.'"></td>
             </tr>
             <tr>
-                <td valign="top">10.</td>
+                <td valign="top">14.</td>
                 <td valign="top">Pekerjaan Wali </td>
                 <td valign="top">:</td>
                 <td valign="top">
-                <select name="kerja_wali" class="form-control">';
-                    $pekerjaans = Pekerjaan::all();
+                <select name="kerja_wali" class="form-control">
+                    <option value="">-- Pilih Pekerjaan --</option>';
                     foreach($pekerjaans as $pekerjaan){
                         if($pekerjaan->id == $murid->kerja_wali){
                             $sel = ' selected';
@@ -288,13 +386,16 @@ class IndukrombelController extends Controller
                 </td>
             </tr>
             <tr>
-                <td valign="top">11.</td>
-                <td valign="top">Alamat Rumah Wali </td>
+                <td valign="top">15.</td>
+                <td valign="top">Alamat/Telp Wali </td>
                 <td valign="top">:</td>
-                <td valign="top"><input type="text" class="form-control" name="alamat_wali" value="'.$murid->alamat_wali.'"></td>
+                <td valign="top">
+                    <input type="text" class="form-control mb-1" name="alamat_wali" value="'.$murid->alamat_wali.'" placeholder="Alamat Wali">
+                    <input type="text" class="form-control" name="telp_wali" value="'.$murid->telp_wali.'" placeholder="Telp Wali">
+                </td>
             </tr>
             <tr>
-                <td valign="top">12.</td>
+                <td valign="top">16.</td>
                 <td valign="top">Diterima Menjadi Siswa </td>
                 <td valign="top"></td>
                 <td valign="top"></td>
@@ -316,6 +417,54 @@ class IndukrombelController extends Controller
                 <td valign="top">c. Asal Sekolah</td>
                 <td valign="top">:</td>
                 <td valign="top"><input type="text" class="form-control" name="sekolah_asal" value="'.$murid->sekolah_asal.'"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">d. No. Ijazah </td>
+                <td valign="top">:</td>
+                <td valign="top"><input type="text" class="form-control" name="ijazah_smp" value="'.$murid->ijazah_smp.'"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">e. Tanggal Ijazah </td>
+                <td valign="top">:</td>
+                <td valign="top"><input type="date" class="form-control" name="tanggal_ijazah_smp" value="'.$murid->tanggal_ijazah_smp.'"></td>
+            </tr>
+            <tr>
+                <td valign="top">17.</td>
+                <td valign="top">Meninggalkan Sekolah </td>
+                <td valign="top"></td>
+                <td valign="top"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">a. Tanggal</td>
+                <td valign="top">:</td>
+                <td valign="top"><input type="date" class="form-control" name="tanggal_meninggalkan" value="'.$murid->tanggal_meninggalkan.'"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">b. Alasan</td>
+                <td valign="top">:</td>
+                <td valign="top"><input type="text" class="form-control" name="alasan_meninggalkan" value="'.$murid->alasan_meninggalkan.'"></td>
+            </tr>
+            <tr>
+                <td valign="top">18.</td>
+                <td valign="top">Tamat </td>
+                <td valign="top"></td>
+                <td valign="top"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">a. No. Ijazah</td>
+                <td valign="top">:</td>
+                <td valign="top"><input type="text" class="form-control" name="no_ijazah_akhir" value="'.$murid->no_ijazah_akhir.'"></td>
+            </tr>
+            <tr>
+                <td valign="top"></td>
+                <td valign="top">b. Tanggal</td>
+                <td valign="top">:</td>
+                <td valign="top"><input type="date" class="form-control" name="tanggal_ijazah_akhir" value="'.$murid->tanggal_ijazah_akhir.'"></td>
             </tr>
             <tr>
                 <td colspan="4" align="right">                
@@ -411,25 +560,39 @@ class IndukrombelController extends Controller
         if($request->id){
             $data = [
                 'nama' => $request->nama,
+                'no_induk' => $request->no_induk,
+                'nisn' => $request->nisn,
+                'nik' => $request->nik,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'tempat_lahir' => $request->tempat_lahir,
-                'warga_negara' => $request->warga_negara,
                 'tanggal_lahir' => $request->tanggal_lahir,
+                'warga_negara' => $request->warga_negara,
                 'agama_id' => $request->agama_id,
+                'anak_ke' => $request->anak_ke,
                 'alamat' => $request->alamat,
                 'rt' => $request->rt,
                 'rw' => $request->rw,
                 'desa_kelurahan' => $request->desa_kelurahan,
                 'kecamatan' => $request->kecamatan,
+                'kode_pos' => $request->kode_pos,
+                'no_telp' => $request->no_telp,
+                'email' => $request->email,
                 'sekolah_asal' => $request->sekolah_asal,
+                'ijazah_smp' => $request->ijazah_smp,
+                'tanggal_ijazah_smp' => $request->tanggal_ijazah_smp,
                 'diterima_kelas' => $request->diterima_kelas,
                 'diterima' => $request->diterima,
+                'tanggal_meninggalkan' => $request->tanggal_meninggalkan,
+                'alasan_meninggalkan' => $request->alasan_meninggalkan,
+                'no_ijazah_akhir' => $request->no_ijazah_akhir,
+                'tanggal_ijazah_akhir' => $request->tanggal_ijazah_akhir,
                 'nama_ayah' => $request->nama_ayah,
                 'nama_ibu' => $request->nama_ibu,
                 'kerja_ayah' => $request->kerja_ayah,
                 'kerja_ibu' => $request->kerja_ibu,
                 'nama_wali' => $request->nama_wali,
                 'alamat_wali' => $request->alamat_wali,
+                'telp_wali' => $request->telp_wali,
                 'kerja_wali' => $request->kerja_wali,
             ];
             Pesertadidik::where('id', $request->id)->update($data);
@@ -631,6 +794,47 @@ class IndukrombelController extends Controller
         }
         
         return response()->json(['success' => true, 'message' => 'Status kenaikan/kelulusan berhasil disimpan']);
+    }
+
+    public function getKelompok(Request $request)
+    {
+        $rombonganbelajar = Rombonganbelajar::where('id', $request->rombonganbelajar_id)->first();
+        $thn_kurikulum = date('Y', strtotime($rombonganbelajar->kurikulum->mulai_berlaku));
+        $kelompoks = Kelompok::where('kurikulum', $thn_kurikulum)->get();
+        
+        return response()->json($kelompoks);
+    }
+
+    public function getMatapelajaran(Request $request)
+    {
+        $matapelajarans = Matapelajaran::orderBy('nama', 'asc')->get();
+        
+        return response()->json($matapelajarans);
+    }
+
+    public function tambahMapel(Request $request)
+    {
+        $sekolah_id = Sekolah::value('id');
+        $rombonganbelajar = Rombonganbelajar::where('id', $request->rombonganbelajar_id)->first();
+        
+        // Generate unique ID
+        $id = (string) Str::uuid();
+        
+        $data = [
+            'id' => $id,
+            'sekolah_id' => $sekolah_id,
+            'semester_id' => $request->semester_id,
+            'rombonganbelajar_id' => $request->rombonganbelajar_id,
+            'matapelajaran_id' => $request->matapelajaran_id,
+            'nama_mata_pelajaran' => $request->nama_mata_pelajaran,
+            'kelompok_id' => $request->kelompok_id,
+            'no_urut' => $request->no_urut,
+            'is_dapodik' => 0
+        ];
+        
+        Pembelajaran::create($data);
+        
+        return response()->json(['success' => true, 'message' => 'Mata pelajaran berhasil ditambahkan']);
     }
    
 }
