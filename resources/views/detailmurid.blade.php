@@ -99,36 +99,60 @@
                             </tr>
                             <tr>
                                 <td valign="top">2.</td>
-                                <td valign="top">Jenis Kelamin </td>
+                                <td valign="top">No. Induk / NISN </td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->jenis_kelamin }}</td>
+                                <td valign="top">{{ $murid->no_induk }} / {{ $murid->nisn }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">3.</td>
+                                <td valign="top">NIK </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->nik }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">4.</td>
+                                <td valign="top">Jenis Kelamin </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">5.</td>
                                 <td valign="top">Tempat, Tanggal Lahir </td>
                                 <td valign="top">:</td>
                                 <td valign="top">{{ $murid->tempat_lahir.", ".date('d F Y', strtotime($murid->tanggal_lahir)) }}</td>
                             </tr>
                             <tr>
-                                <td valign="top">4.</td>
-                                <td valign="top">Warga Negara</td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->warga_negara }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">5.</td>
-                                <td valign="top">Agama </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->agama->nama }}</td>
-                            </tr>
-                            <tr>
                                 <td valign="top">6.</td>
-                                <td valign="top">Alamat/tempat tinggal siswa </td>
+                                <td valign="top">Warga Negara </td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", ".$murid->kecamatan }}</td>
+                                <td valign="top">{{ $murid->warga_negara ?? '-' }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">7.</td>
+                                <td valign="top">Agama </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->agama->nama ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">8.</td>
+                                <td valign="top">Anak Ke </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->anak_ke ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">9.</td>
+                                <td valign="top">Alamat </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->alamat }}{{ $murid->rt ? ", RT. ".$murid->rt : '' }}{{ $murid->rw ? ", RW. ".$murid->rw : '' }}{{ $murid->desa_kelurahan ? ", Ds./Kel. ".$murid->desa_kelurahan : '' }}{{ $murid->kecamatan ? ", Kec. ".$murid->kecamatan : '' }}{{ $murid->kode_pos ? " ".$murid->kode_pos : '' }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">10.</td>
+                                <td valign="top">No. Telp / Email </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->no_telp ?? '-' }} / {{ $murid->email ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">11.</td>
                                 <td valign="top">Nama Orang Tua </td>
                                 <td valign="top"></td>
                                 <td valign="top"></td>
@@ -146,7 +170,7 @@
                                 <td valign="top">{{ $murid->nama_ibu }}</td>
                             </tr>
                             <tr>
-                                <td valign="top">8.</td>
+                                <td valign="top">12.</td>
                                 <td valign="top">Pekerjaan </td>
                                 <td valign="top"></td>
                                 <td valign="top"></td>
@@ -155,40 +179,34 @@
                                 <td valign="top"></td>
                                 <td valign="top">a. Ayah</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ App\Models\Pekerjaan::where('id', $murid->kerja_ayah)->first()->nama }}</td>
+                                <td valign="top">{{ $murid->kerja_ayah ? App\Models\Pekerjaan::where('id', $murid->kerja_ayah)->first()->nama ?? '-' : '-' }}</td>
                             </tr>
                             <tr>
                                 <td valign="top"></td>
                                 <td valign="top">b. Ibu</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ App\Models\Pekerjaan::where('id', $murid->kerja_ibu)->first()->nama }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">9.</td>
-                                <td valign="top">Alamat Rumah </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", ".$murid->kecamatan }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">10.</td>
-                                <td valign="top">Nama Wali Siswa </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->nama_wali }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">11.</td>
-                                <td valign="top">Pekerjaan Wali </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ ($murid->kerja_wali <> null) ? App\Models\Pekerjaan::where('id', $murid->kerja_wali)->first()->nama : '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">12.</td>
-                                <td valign="top">Alamat Rumah Wali </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->alamat_wali }}</td>
+                                <td valign="top">{{ $murid->kerja_ibu ? App\Models\Pekerjaan::where('id', $murid->kerja_ibu)->first()->nama ?? '-' : '-' }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">13.</td>
+                                <td valign="top">Nama Wali Siswa </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->nama_wali ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">14.</td>
+                                <td valign="top">Pekerjaan Wali </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ ($murid->kerja_wali != null) ? (App\Models\Pekerjaan::where('id', $murid->kerja_wali)->first()->nama ?? '-') : '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">15.</td>
+                                <td valign="top">Alamat/Telp Wali </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->alamat_wali ?? '-' }} / {{ $murid->telp_wali ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">16.</td>
                                 <td valign="top">Diterima Menjadi Siswa </td>
                                 <td valign="top"></td>
                                 <td valign="top"></td>
@@ -224,7 +242,7 @@
                                 <td valign="top">{{ date('d F Y', strtotime($murid->tanggal_ijazah_smp)) }}</td>
                             </tr>
                             <tr>
-                                <td valign="top">14.</td>
+                                <td valign="top">17.</td>
                                 <td valign="top">Meninggalkan Sekolah </td>
                                 <td valign="top"></td>
                                 <td valign="top"></td>
@@ -242,7 +260,7 @@
                                 <td valign="top">{{ $murid->alasan_meninggalkan }}</td>
                             </tr>
                             <tr>
-                                <td valign="top">15.</td>
+                                <td valign="top">18.</td>
                                 <td valign="top">Tamat </td>
                                 <td valign="top"></td>
                                 <td valign="top"></td>
@@ -295,6 +313,7 @@
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <h4 class="card-title">Daftar Nilai Peserta Didik</h4>
                                             <div class="d-flex">
+                                                <a href="javascript:void(0)" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#modalTambahMapel" id="btn-tambah-mapel" data-rombel="{{ $rombel->id }}" data-rombelinduk="{{ $rombel->rombonganbelajar_id }}" data-semester="{{ $rombel->semester_id }}">Tambah</a>
                                                 <a href="javascript:void(0)" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalGeneral" id="btn-edit-nilai" data-id="{{ $rombel->id }}">Edit</a>  
                                             </div>
                                         </div>
@@ -456,6 +475,53 @@
             </div>
         </div>
     </section>
+
+    <!-- Modal Tambah Mata Pelajaran -->
+    <div class="modal fade" id="modalTambahMapel" tabindex="-1" role="dialog" aria-labelledby="modalTambahMapelLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <form id="formTambahMapel" method="POST" action="{{ url('/tambah-mapel') }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTambahMapelLabel">Tambah Mata Pelajaran</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="anggotarombel_id" id="anggotarombel_id">
+                        <input type="hidden" name="rombonganbelajar_id" id="rombonganbelajar_id">
+                        <input type="hidden" name="semester_id" id="semester_id">
+                        <div class="form-group">
+                            <label for="kelompok_id">Kelompok Mata Pelajaran</label>
+                            <select name="kelompok_id" id="kelompok_id" class="form-control" required>
+                                <option value="">-- Pilih Kelompok --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="matapelajaran_id">Mata Pelajaran</label>
+                            <select name="matapelajaran_id" id="matapelajaran_id" class="form-control" required>
+                                <option value="">-- Pilih Mata Pelajaran --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nama_mata_pelajaran">Nama Mata Pelajaran (Lokal)</label>
+                            <input type="text" name="nama_mata_pelajaran" id="nama_mata_pelajaran" class="form-control" placeholder="Nama akan terisi otomatis, bisa dikustomisasi" required>
+                            <small class="form-text text-muted">Nama otomatis diambil dari mata pelajaran yang dipilih, dapat diubah sesuai kebutuhan.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="no_urut">Nomor Urut</label>
+                            <input type="number" name="no_urut" id="no_urut" class="form-control" placeholder="Masukkan nomor urut" required min="1">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Template Modal -->
     <div class="modal fade text-left w-100" id="modalGeneral" tabindex="-1" role="dialog"
@@ -641,6 +707,81 @@
             complete: function () {
                 // Sembunyikan overlay spinner
                 $("#loadingOverlay").addClass("d-none");
+                window.location.reload();
+            }
+        });
+    });
+
+    // Handler untuk Tambah Mata Pelajaran
+    $('body').on('click', '#btn-tambah-mapel', function () {
+        let rombel_id = $(this).data('rombel');
+        let rombonganbelajar_id = $(this).data('rombelinduk');
+        let semester_id = $(this).data('semester');
+
+        // Set hidden input values
+        $('#anggotarombel_id').val(rombel_id);
+        $('#rombonganbelajar_id').val(rombonganbelajar_id);
+        $('#semester_id').val(semester_id);
+
+        // Load kelompok berdasarkan rombonganbelajar_id
+        $.ajax({
+            url: "{{ url('/get-kelompok?rombonganbelajar_id=') }}" + rombonganbelajar_id,
+            type: "GET",
+            success: function(data) {
+                $('#kelompok_id').html('<option value="">-- Pilih Kelompok --</option>');
+                $.each(data, function(index, kelompok) {
+                    $('#kelompok_id').append('<option value="' + kelompok.id + '">' + kelompok.nama_kelompok + '</option>');
+                });
+            }
+        });
+
+        // Load semua mata pelajaran
+        $.ajax({
+            url: "{{ url('/get-matapelajaran') }}",
+            type: "GET",
+            success: function(data) {
+                $('#matapelajaran_id').html('<option value="">-- Pilih Mata Pelajaran --</option>');
+                $.each(data, function(index, matapelajaran) {
+                    $('#matapelajaran_id').append('<option value="' + matapelajaran.id + '" data-nama="' + matapelajaran.nama + '">' + matapelajaran.nama + '</option>');
+                });
+            }
+        });
+
+        // Reset form fields
+        $('#nama_mata_pelajaran').val('');
+        $('#no_urut').val('');
+    });
+
+    // Auto-populate nama_mata_pelajaran saat memilih matapelajaran_id
+    $('#matapelajaran_id').on('change', function() {
+        let selected = $(this).find('option:selected');
+        let nama = selected.data('nama');
+        $('#nama_mata_pelajaran').val(nama || '');
+    });
+
+    // Handle form submit untuk tambah mata pelajaran
+    $('#formTambahMapel').on('submit', function(e) {
+        e.preventDefault();
+        
+        let formData = $(this).serialize();
+        
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                // Tampilkan modal success
+                document.getElementById('pesan').innerText = response.message || "Mata pelajaran berhasil ditambahkan";
+                let successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+                
+                // Close modal tambah mapel
+                $('#modalTambahMapel').modal('hide');
+            },
+            error: function(error) {
+                alert("Terjadi kesalahan saat menambahkan mata pelajaran");
+            },
+            complete: function() {
                 window.location.reload();
             }
         });
