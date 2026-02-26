@@ -379,7 +379,7 @@
                                 @if($rombel->rombonganbelajar->tingkat <> 12)
                                 <td align="center">{!! $st == 1 ? 'Naik' : '<s>Naik</s>' !!}</td>
                                 @else
-                                <td align="center">{!! $st == 1 ? 'Lulus' : '<s>Lulus</s>' !!}</td>
+                                <td align="center">{!! $st == 3 ? 'Lulus' : '<s>Lulus</s>' !!}</td>
                                 @endif
                             @else
                                 <td rowspan="2">Tahun : {{ substr($rombel->semester_id, 0,4)."/".(int)substr($rombel->semester_id, 0,4)+1 }}</td>
@@ -401,7 +401,7 @@
                                 @if($rombel->rombonganbelajar->tingkat <> 12)
                                 <td align="center">{!! $st == 1 ? '<s>Tidak Naik</s>' : 'Tidak Naik' !!}</td>
                                 @else
-                                <td align="center">{!! $st == 1 ? '<s>Tidak Lulus</s>' : 'Tidak Lulus' !!}</td>
+                                <td align="center">{!! $st == 3 ? '<s>Tidak Lulus</s>' : 'Tidak Lulus' !!}</td>
                                 @endif
                             @endif
                             @endforeach

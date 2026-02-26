@@ -99,60 +99,36 @@
                             </tr>
                             <tr>
                                 <td valign="top">2.</td>
-                                <td valign="top">No. Induk / NISN </td>
+                                <td valign="top">Jenis Kelamin </td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->no_induk }} / {{ $murid->nisn }}</td>
+                                <td valign="top">{{ $murid->jenis_kelamin }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">3.</td>
-                                <td valign="top">NIK </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->nik }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">4.</td>
-                                <td valign="top">Jenis Kelamin </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">5.</td>
                                 <td valign="top">Tempat, Tanggal Lahir </td>
                                 <td valign="top">:</td>
                                 <td valign="top">{{ $murid->tempat_lahir.", ".date('d F Y', strtotime($murid->tanggal_lahir)) }}</td>
                             </tr>
                             <tr>
-                                <td valign="top">6.</td>
-                                <td valign="top">Warga Negara </td>
+                                <td valign="top">4.</td>
+                                <td valign="top">Warga Negara</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->warga_negara ?? '-' }}</td>
+                                <td valign="top">{{ $murid->warga_negara }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">5.</td>
+                                <td valign="top">Agama </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->agama->nama }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">6.</td>
+                                <td valign="top">Alamat/tempat tinggal siswa </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", ".$murid->kecamatan }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">7.</td>
-                                <td valign="top">Agama </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->agama->nama ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">8.</td>
-                                <td valign="top">Anak Ke </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->anak_ke ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">9.</td>
-                                <td valign="top">Alamat </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->alamat }}{{ $murid->rt ? ", RT. ".$murid->rt : '' }}{{ $murid->rw ? ", RW. ".$murid->rw : '' }}{{ $murid->desa_kelurahan ? ", Ds./Kel. ".$murid->desa_kelurahan : '' }}{{ $murid->kecamatan ? ", Kec. ".$murid->kecamatan : '' }}{{ $murid->kode_pos ? " ".$murid->kode_pos : '' }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">10.</td>
-                                <td valign="top">No. Telp / Email </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->no_telp ?? '-' }} / {{ $murid->email ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">11.</td>
                                 <td valign="top">Nama Orang Tua </td>
                                 <td valign="top"></td>
                                 <td valign="top"></td>
@@ -170,7 +146,7 @@
                                 <td valign="top">{{ $murid->nama_ibu }}</td>
                             </tr>
                             <tr>
-                                <td valign="top">12.</td>
+                                <td valign="top">8.</td>
                                 <td valign="top">Pekerjaan </td>
                                 <td valign="top"></td>
                                 <td valign="top"></td>
@@ -179,34 +155,40 @@
                                 <td valign="top"></td>
                                 <td valign="top">a. Ayah</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->kerja_ayah ? App\Models\Pekerjaan::where('id', $murid->kerja_ayah)->first()->nama ?? '-' : '-' }}</td>
+                                <td valign="top">{{ App\Models\Pekerjaan::where('id', $murid->kerja_ayah)->first()->nama }}</td>
                             </tr>
                             <tr>
                                 <td valign="top"></td>
                                 <td valign="top">b. Ibu</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->kerja_ibu ? App\Models\Pekerjaan::where('id', $murid->kerja_ibu)->first()->nama ?? '-' : '-' }}</td>
+                                <td valign="top">{{ App\Models\Pekerjaan::where('id', $murid->kerja_ibu)->first()->nama }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">9.</td>
+                                <td valign="top">Alamat Rumah </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->alamat.", RT. ".$murid->rt.", RW. ".$murid->rw.", Ds./Kel. ".$murid->desa_kelurahan.", ".$murid->kecamatan }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">10.</td>
+                                <td valign="top">Nama Wali Siswa </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->nama_wali }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">11.</td>
+                                <td valign="top">Pekerjaan Wali </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ ($murid->kerja_wali <> null) ? App\Models\Pekerjaan::where('id', $murid->kerja_wali)->first()->nama : '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">12.</td>
+                                <td valign="top">Alamat Rumah Wali </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ $murid->alamat_wali }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">13.</td>
-                                <td valign="top">Nama Wali Siswa </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->nama_wali ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">14.</td>
-                                <td valign="top">Pekerjaan Wali </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ ($murid->kerja_wali != null) ? (App\Models\Pekerjaan::where('id', $murid->kerja_wali)->first()->nama ?? '-') : '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">15.</td>
-                                <td valign="top">Alamat/Telp Wali </td>
-                                <td valign="top">:</td>
-                                <td valign="top">{{ $murid->alamat_wali ?? '-' }} / {{ $murid->telp_wali ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td valign="top">16.</td>
                                 <td valign="top">Diterima Menjadi Siswa </td>
                                 <td valign="top"></td>
                                 <td valign="top"></td>
@@ -221,7 +203,7 @@
                                 <td valign="top"></td>
                                 <td valign="top">b. Mulai tanggal</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->diterima ? date('d F Y', strtotime($murid->diterima)) : '-' }}</td>
+                                <td valign="top">{{ date('d F Y', strtotime($murid->diterima)) }}</td>
                             </tr>
                             <tr>
                                 <td valign="top"></td>
@@ -231,33 +213,51 @@
                             </tr>
                             <tr>
                                 <td valign="top"></td>
-                                <td valign="top">d. Ijazah SMP/MTs (No./Tgl.)</td>
+                                <td valign="top">d. No. Ijazah </td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->ijazah_smp ?? '-' }} / {{ $murid->tanggal_ijazah_smp ? date('d F Y', strtotime($murid->tanggal_ijazah_smp)) : '-' }}</td>
+                                <td valign="top">{{ $murid->ijazah_smp }}</td>
                             </tr>
                             <tr>
-                                <td valign="top">17.</td>
+                                <td valign="top"></td>
+                                <td valign="top">e. Tanggal Ijazah </td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ date('d F Y', strtotime($murid->tanggal_ijazah_smp)) }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top">14.</td>
                                 <td valign="top">Meninggalkan Sekolah </td>
                                 <td valign="top"></td>
                                 <td valign="top"></td>
                             </tr>
                             <tr>
                                 <td valign="top"></td>
-                                <td valign="top">a. Tanggal Meninggalkan</td>
+                                <td valign="top">a. Tanggal</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->tanggal_meninggalkan ? date('d F Y', strtotime($murid->tanggal_meninggalkan)) : '-' }}</td>
+                                <td valign="top">{{ date('d F Y', strtotime($murid->tanggal_meninggalkan)) }}</td>
                             </tr>
                             <tr>
                                 <td valign="top"></td>
-                                <td valign="top">b. Alasan Meninggalkan</td>
+                                <td valign="top">b. Alasan</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->alasan_meninggalkan ?? '-' }}</td>
+                                <td valign="top">{{ $murid->alasan_meninggalkan }}</td>
                             </tr>
                             <tr>
-                                <td valign="top">18.</td>
-                                <td valign="top">Ijazah Akhir (No./Tgl.) </td>
+                                <td valign="top">15.</td>
+                                <td valign="top">Tamat </td>
+                                <td valign="top"></td>
+                                <td valign="top"></td>
+                            </tr>
+                            <tr>
+                                <td valign="top"></td>
+                                <td valign="top">a. No. Ijazah</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->no_ijazah_akhir ?? '-' }} / {{ $murid->tanggal_ijazah_akhir ? date('d F Y', strtotime($murid->tanggal_ijazah_akhir)) : '-' }}</td>
+                                <td valign="top">{{ $murid->no_ijazah_akhir }}</td>
+                            </tr>
+                            <tr>
+                                <td valign="top"></td>
+                                <td valign="top">b. Tanggal</td>
+                                <td valign="top">:</td>
+                                <td valign="top">{{ date('d F Y', strtotime($murid->tanggal_ijazah_akhir)) }}</td>
                             </tr>
                         </table>
                     </div>
@@ -295,7 +295,6 @@
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <h4 class="card-title">Daftar Nilai Peserta Didik</h4>
                                             <div class="d-flex">
-                                                <a href="javascript:void(0)" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#modalTambahMapel" id="btn-tambah-mapel" data-rombel="{{ $rombel->id }}" data-rombelinduk="{{ $rombel->rombonganbelajar_id }}" data-semester="{{ $rombel->semester_id }}">Tambah</a>
                                                 <a href="javascript:void(0)" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalGeneral" id="btn-edit-nilai" data-id="{{ $rombel->id }}">Edit</a>  
                                             </div>
                                         </div>
@@ -359,6 +358,95 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <!-- Kehadiran Section -->
+                                    <div class="card mt-3">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h4 class="card-title">Kehadiran</h4>
+                                            <div class="d-flex">
+                                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalGeneral" id="btn-edit-absensi" data-anggotarombel="{{ $rombel->id }}">Edit</a>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            @php
+                                                $absensi = App\Models\Absensi::where('anggotarombel_id', $rombel->id)->first();
+                                            @endphp
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Sakit</label>
+                                                        <p class="form-control-plaintext"><strong>{{ $absensi ? $absensi->sakit : '-' }}</strong> hari</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Izin</label>
+                                                        <p class="form-control-plaintext"><strong>{{ $absensi ? $absensi->izin : '-' }}</strong> hari</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Alfa</label>
+                                                        <p class="form-control-plaintext"><strong>{{ $absensi ? $absensi->alpa : '-' }}</strong> hari</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    @php
+                                        $isSemesterGenap = (int)substr($rombel->semester_id, -1) % 2 == 0;
+                                    @endphp
+                                    
+                                    @if($isSemesterGenap)
+                                    <!-- Status Kenaikan Kelas / Kelulusan Section -->
+                                    <div class="card mt-3">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h4 class="card-title">Status Kenaikan Kelas / Kelulusan</h4>
+                                            <div class="d-flex">
+                                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalGeneral" id="btn-edit-kenaikan" data-anggotarombel="{{ $rombel->id }}">Edit</a>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            @php
+                                                $kenaikan = App\Models\Kenaikan::where('anggotarombel_id', $rombel->id)->first();
+                                                $tingkat = $rombel->rombonganbelajar->tingkat;
+                                            @endphp
+                                            <div class="form-group">
+                                                <label>Status</label>
+                                                <p class="form-control-plaintext">
+                                                    @if($kenaikan)
+                                                        @if($tingkat == 12 && $isSemesterGenap)
+                                                            @if($kenaikan->status == 3)
+                                                                <span class="badge bg-success">Lulus</span>
+                                                            @elseif($kenaikan->status == 4)
+                                                                <span class="badge bg-danger">Tidak Lulus</span>
+                                                            @else
+                                                                <span class="badge bg-secondary">-</span>
+                                                            @endif
+                                                        @else
+                                                            @if($kenaikan->status == 1)
+                                                                <span class="badge bg-success">Naik Kelas</span>
+                                                            @elseif($kenaikan->status == 2)
+                                                                <span class="badge bg-danger">Tidak Naik Kelas</span>
+                                                            @else
+                                                                <span class="badge bg-secondary">-</span>
+                                                            @endif
+                                                        @endif
+                                                    @else
+                                                        <span class="badge bg-secondary">-</span>
+                                                    @endif
+                                                </p>
+                                            </div>
+                                            @if($kenaikan && $kenaikan->nama_kelas && !($tingkat == 12 && $isSemesterGenap))
+                                            <div class="form-group">
+                                                <label>Kelas Tujuan</label>
+                                                <p class="form-control-plaintext">{{ $kenaikan->nama_kelas }}</p>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>                                
                                 @endforeach
                             </div>                            
@@ -388,6 +476,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" id="btnSimpan">
+                    <span class="btn-icon-left"><i class="fa fa-save"></i></span>
+                    Simpan
+                </button>
                 <button type="button" class="btn btn-light-secondary" data-dismiss="modal">
                     <i class="bx bx-x d-block d-sm-none"></i>
                     <span class="d-none d-sm-block">Tutup</span>
@@ -407,53 +499,6 @@
                     <p id="pesan">Data berhasil disimpan.</p>
                     <button type="button" class="btn btn-light mt-2" data-bs-dismiss="modal">OK</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah Mata Pelajaran -->
-    <div class="modal fade" id="modalTambahMapel" tabindex="-1" role="dialog" aria-labelledby="modalTambahMapelLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <form id="formTambahMapel" method="POST" action="{{ url('/tambah-mapel') }}">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTambahMapelLabel">Tambah Mata Pelajaran</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" name="anggotarombel_id" id="anggotarombel_id">
-                        <input type="hidden" name="rombonganbelajar_id" id="rombonganbelajar_id">
-                        <input type="hidden" name="semester_id" id="semester_id">
-                        <div class="form-group">
-                            <label for="kelompok_id">Kelompok Mata Pelajaran</label>
-                            <select name="kelompok_id" id="kelompok_id" class="form-control" required>
-                                <option value="">-- Pilih Kelompok --</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="matapelajaran_id">Mata Pelajaran</label>
-                            <select name="matapelajaran_id" id="matapelajaran_id" class="form-control" required>
-                                <option value="">-- Pilih Mata Pelajaran --</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="nama_mata_pelajaran">Nama Mata Pelajaran (Lokal)</label>
-                            <input type="text" name="nama_mata_pelajaran" id="nama_mata_pelajaran" class="form-control" placeholder="Nama akan terisi otomatis, bisa dikustomisasi" required>
-                            <small class="form-text text-muted">Nama otomatis diambil dari mata pelajaran yang dipilih, dapat diubah sesuai kebutuhan.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="no_urut">Nomor Urut</label>
-                            <input type="number" name="no_urut" id="no_urut" class="form-control" placeholder="Masukkan nomor urut" required min="1">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -489,6 +534,18 @@
         });
     });
 
+    // Helper function untuk show/hide tombol footer berdasarkan ada tidaknya tombol submit di body
+    function toggleFooterButton() {
+        // Cek apakah ada tombol dengan id "btnSubmit" di dalam modal body
+        if($('#modal-body #btnSubmit').length > 0) {
+            // Ada tombol di body, sembunyikan tombol footer
+            $('#btnSimpan').hide();
+        } else {
+            // Tidak ada tombol di body, tampilkan tombol footer
+            $('#btnSimpan').show();
+        }
+    }
+
     $('body').on('click', '#btn-edit-biodata', function () {
             let murid_id = $(this).data('id');
             
@@ -500,6 +557,8 @@
                 success:function(response){
                     $('#modal-title').html("Edit Biodata");
                     $('#modal-body').html(response);
+                    $('#thisForm').removeAttr('action');
+                    toggleFooterButton();
                 }
             });
     });
@@ -515,6 +574,42 @@
                 success:function(response){
                     $('#modal-title').html("Edit Nilai");
                     $('#modal-body').html(response);
+                    $('#thisForm').removeAttr('action');
+                    toggleFooterButton();
+                }
+            });
+    });
+
+    $('body').on('click', '#btn-edit-absensi', function () {
+            let anggotarombel_id = $(this).data('anggotarombel');
+            
+            //fetch detail post with ajax
+            $.ajax({
+                url: "{{ url('/editabsensi?anggotarombel_id=') }}"+anggotarombel_id,
+                type: "GET",
+                cache: false,
+                success:function(response){
+                    $('#modal-title').html("Edit Kehadiran");
+                    $('#modal-body').html(response);
+                    $('#thisForm').attr('action', '{{ url('/simpan-absensi') }}');
+                    toggleFooterButton();
+                }
+            });
+    });
+
+    $('body').on('click', '#btn-edit-kenaikan', function () {
+            let anggotarombel_id = $(this).data('anggotarombel');
+            
+            //fetch detail post with ajax
+            $.ajax({
+                url: "{{ url('/editkenaikan?anggotarombel_id=') }}"+anggotarombel_id,
+                type: "GET",
+                cache: false,
+                success:function(response){
+                    $('#modal-title').html("Edit Status Kenaikan/Kelulusan");
+                    $('#modal-body').html(response);
+                    $('#thisForm').attr('action', '{{ url('/simpan-kenaikan') }}');
+                    toggleFooterButton();
                 }
             });
     });
@@ -523,7 +618,7 @@
     e.preventDefault();
 
     let form = $(this);
-    let url = "{{ url('/updateinduk') }}";
+    let url = form.attr('action') || "{{ url('/updateinduk') }}";
     let data = form.serialize();
 
     // Tampilkan overlay spinner
@@ -536,104 +631,12 @@
             success: function (response) {
 
                 // Tampilkan modal success
-                document.getElementById('pesan').innerText = "Berhasil menyimpan Data";
+                document.getElementById('pesan').innerText = response.message || "Berhasil menyimpan Data";
                 let successModal = new bootstrap.Modal(document.getElementById('successModal'));
                 successModal.show();
             },
             error: function () {
                 alert("Terjadi kesalahan, coba lagi." + error);
-            },
-            complete: function () {
-                // Sembunyikan overlay spinner
-                $("#loadingOverlay").addClass("d-none");
-                window.location.reload();
-            }
-        });
-    });
-
-    // Tombol Tambah Mata Pelajaran
-    $('body').on('click', '#btn-tambah-mapel', function () {
-        let rombel_id = $(this).data('rombel');
-        let rombelinduk_id = $(this).data('rombelinduk');
-        let semester_id = $(this).data('semester');
-        
-        $('#anggotarombel_id').val(rombel_id);
-        $('#rombonganbelajar_id').val(rombelinduk_id);
-        $('#semester_id').val(semester_id);
-        
-        // Reset form
-        $('#matapelajaran_id').html('<option value="">-- Pilih Mata Pelajaran --</option>');
-        $('#nama_mata_pelajaran').val('');
-        
-        // Ambil data kelompok mata pelajaran
-        $.ajax({
-            url: "{{ url('/get-kelompok') }}?rombonganbelajar_id=" + rombelinduk_id,
-            type: "GET",
-            cache: false,
-            success: function(response) {
-                let options = '<option value="">-- Pilih Kelompok --</option>';
-                response.forEach(function(item) {
-                    options += '<option value="' + item.id + '">' + item.nama_kelompok + '</option>';
-                });
-                $('#kelompok_id').html(options);
-            }
-        });
-        
-        // Ambil data mata pelajaran
-        $.ajax({
-            url: "{{ url('/get-matapelajaran') }}",
-            type: "GET",
-            cache: false,
-            success: function(response) {
-                let options = '<option value="">-- Pilih Mata Pelajaran --</option>';
-                response.forEach(function(item) {
-                    options += '<option value="' + item.id + '" data-nama="' + item.nama + '">' + item.nama + '</option>';
-                });
-                $('#matapelajaran_id').html(options);
-            }
-        });
-    });
-    
-    // Auto-fill nama mata pelajaran ketika mata pelajaran dipilih
-    $('#matapelajaran_id').on('change', function() {
-        let selectedOption = $(this).find('option:selected');
-        let namaMapel = selectedOption.data('nama');
-        if (namaMapel) {
-            $('#nama_mata_pelajaran').val(namaMapel);
-        } else {
-            $('#nama_mata_pelajaran').val('');
-        }
-    });
-
-    // Submit form tambah mata pelajaran
-    $("#formTambahMapel").on("submit", function (e) {
-        e.preventDefault();
-
-        let form = $(this);
-        let url = form.attr('action');
-        let data = form.serialize();
-
-        // Tampilkan overlay spinner
-        $("#loadingOverlay").removeClass("d-none");
-
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: data,
-            success: function (response) {
-                // Tutup modal
-                $('#modalTambahMapel').modal('hide');
-                
-                // Reset form
-                form[0].reset();
-                
-                // Tampilkan modal success
-                document.getElementById('pesan').innerText = "Berhasil menambahkan Mata Pelajaran";
-                let successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
-            },
-            error: function (xhr) {
-                alert("Terjadi kesalahan: " + xhr.responseText);
             },
             complete: function () {
                 // Sembunyikan overlay spinner

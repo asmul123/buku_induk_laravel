@@ -4,12 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Absensi extends Model
 {
     use HasFactory;
     
-    public $incrementing = false; // jangan auto increment
-    protected $keyType = 'string'; // kunci utama bukan integer
+    public $incrementing = false;
+    protected $keyType = 'string';
+    
+    protected $fillable = [
+        'id',
+        'sekolah_id',
+        'anggotarombel_id',
+        'sakit',
+        'izin',
+        'alpa'
+    ];
 
+    public function anggotarombel(): BelongsTo
+    {
+        return $this->belongsTo(Anggotarombel::class);
+    }
 }
