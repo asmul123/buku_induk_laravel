@@ -60,4 +60,9 @@ class Pesertadidik extends Model
     {
         return $this->belongsTo(Agama::class);
     }
+
+    public function Anggotarombel()
+    {
+        return $this->hasMany(Anggotarombel::class, 'pesertadidik_id');
+    }
 }

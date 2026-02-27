@@ -53,12 +53,32 @@
                                     <th>Nama Murid</th>
                                     <th>Jenis Kelamin</th>
                                     <th>Tempat, Tgl Lahir</th>
+                                    <th>Rombel Terakhir</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                             @if($pesertadidiks != "")
                             @foreach($pesertadidiks as $murid)
+                                @php
+                                    // Ambil rombel terakhir reguler berdasarkan semester terbaru
+                                    $latestRombel = $murid->Anggotarombel()
+                                        ->with('Rombonganbelajar.jenisrombel')
+                                        ->whereHas('Rombonganbelajar', function($q) {
+                                            $q->where('jenisrombel_id', 1); // jenisrombel reguler biasanya id 1
+                                        })
+                                        ->orderBy('semester_id', 'desc')
+                                        ->first();
+                                    
+                                    // Tentukan status berdasarkan tanggal_meninggalkan dan tanggal_ijazah_akhir
+                                    $status = 'Aktif';
+                                    if($murid->tanggal_meninggalkan) {
+                                        $status = 'Keluar';
+                                    } elseif($murid->tanggal_ijazah_akhir) {
+                                        $status = 'Lulus';
+                                    }
+                                @endphp
                                 <tr>
                                     <td>{{ $no++ }}</td>
                                     <td><img src="{{ $murid->photo == null ? url('assets/images/avatar/no_image.jpg') : url('storage/'.$murid->photo) }}" width="50px"></td>
@@ -67,6 +87,16 @@
                                     <td>{{ $murid->nama }}</td>
                                     <td>{{ $murid->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
                                     <td>{{ $murid->tempat_lahir }}, {{ date('d-m-Y', strtotime($murid->tanggal_lahir)) }}</td>
+                                    <td>{{ $latestRombel?->Rombonganbelajar?->nama ?? '-' }}</td>
+                                    <td>
+                                        @if($status == 'Aktif')
+                                            <span class="badge bg-success">{{ $status }}</span>
+                                        @elseif($status == 'Lulus')
+                                            <span class="badge bg-info">{{ $status }}</span>
+                                        @else
+                                            <span class="badge bg-warning">{{ $status }}</span>
+                                        @endif
+                                    </td>
                                     <td><a href="{{ url('/detailmurid?pd_id='.$murid->id) }}" class="btn btn-success btn-sm">Lihat</a></td>
                                 </tr>
                             @endforeach

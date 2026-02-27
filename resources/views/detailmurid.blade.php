@@ -119,7 +119,7 @@
                                 <td valign="top">5.</td>
                                 <td valign="top">Tempat, Tanggal Lahir </td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ $murid->tempat_lahir.", ".date('d F Y', strtotime($murid->tanggal_lahir)) }}</td>
+                                <td valign="top">{{ $murid->tanggal_lahir ? $murid->tempat_lahir.", ".date('d F Y', strtotime($murid->tanggal_lahir)) : '-' }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">6.</td>
@@ -221,7 +221,7 @@
                                 <td valign="top"></td>
                                 <td valign="top">b. Mulai tanggal</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ date('d F Y', strtotime($murid->diterima)) }}</td>
+                                <td valign="top">{{ $murid->diterima ? date('d F Y', strtotime($murid->diterima)) : '-' }}</td>
                             </tr>
                             <tr>
                                 <td valign="top"></td>
@@ -239,7 +239,7 @@
                                 <td valign="top"></td>
                                 <td valign="top">e. Tanggal Ijazah </td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ date('d F Y', strtotime($murid->tanggal_ijazah_smp)) }}</td>
+                                <td valign="top">{{ $murid->tanggal_ijazah_smp ? date('d F Y', strtotime($murid->tanggal_ijazah_smp)) : '-' }}</td>
                             </tr>
                             <tr>
                                 <td valign="top">17.</td>
@@ -251,7 +251,7 @@
                                 <td valign="top"></td>
                                 <td valign="top">a. Tanggal</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ date('d F Y', strtotime($murid->tanggal_meninggalkan)) }}</td>
+                                <td valign="top">{{ $murid->tanggal_meninggalkan ? date('d F Y', strtotime($murid->tanggal_meninggalkan)) : '-' }}</td>
                             </tr>
                             <tr>
                                 <td valign="top"></td>
@@ -275,7 +275,7 @@
                                 <td valign="top"></td>
                                 <td valign="top">b. Tanggal</td>
                                 <td valign="top">:</td>
-                                <td valign="top">{{ date('d F Y', strtotime($murid->tanggal_ijazah_akhir)) }}</td>
+                                <td valign="top">{{ $murid->tanggal_ijazah_akhir ? date('d F Y', strtotime($murid->tanggal_ijazah_akhir)) : '-' }}</td>
                             </tr>
                         </table>
                     </div>
