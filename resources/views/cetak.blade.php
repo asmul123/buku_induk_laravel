@@ -4,8 +4,27 @@
     <meta charset="utf-8">
     <title>Laporan Buku Induk</title>
     <style>
-        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
-        h2 { text-align: center; margin-bottom: 20px; }
+        @page {
+            margin: 15px 20px;
+        }
+        body { 
+            font-family: DejaVu Sans, sans-serif; 
+            font-size: 10px; 
+            line-height: 1.15;
+            margin: 0;
+            padding: 0;
+        }
+        h2 { text-align: center; margin-bottom: 10px; font-size: 14px; }
+        h3 { 
+            font-size: 12px; 
+            margin: 0 0 2px 0; 
+            text-align: center;
+        }
+        p { 
+            font-size: 9px; 
+            margin: 0 0 5px 0; 
+            text-align: center;
+        }
         /* default semua tabel ada border */
         table { 
             width: 100%; 
@@ -15,28 +34,29 @@
         table th, 
         table td { 
             border: 1px solid #000; 
-            padding: 4px; 
-            font-size: 11px; 
+            padding: 2px 3px; 
+            font-size: 8.5px; 
+            line-height: 1.1;
         }
-        th { background: #f2f2f2; }
+        th { background: #f2f2f2; font-weight: bold; }
         
-        td.head { background: #f2f2f2; }
-        /* khusus tabel yang dikasih class no-border */
+        td.head { background: #f2f2f2; font-weight: bold; }
+        /* khusus tabel yang dikasih class no-border secara langsung */
         table.no-border, 
-        table.no-border th, 
-        table.no-border td {
+        table.no-border > tr > td,
+        table.no-border > tbody > tr > td {
             border: none !important;
         }
     </style>
 </head>
 <body>
-    <table width="100%">
+    <table class="no-border" style="width: 100%; border-collapse: collapse; border-spacing: 0;">
         <tr>
-            <td width="30%">
-                <span style="text-align:center">
+            <td width="32%" valign="top" style="padding-right: 15px; border: none !important;">
+                <div style="text-align:center">
                     <h3 style="font-family:Trebuchet MS, Arial, Helvetica, sans-serif">IDENTITAS MURID</h3>
                     <p>NISN : {{ $murid->nisn }}</p>
-                </span>
+                </div>
                 <table width="100%">
                     <tr>
                         <td width="5%">1</td>
@@ -150,7 +170,7 @@
                     <tr>
                         <td valign="top">b. Mulai tanggal</td>
                         <td valign="top">:</td>
-                        <td valign="top" colspan="2">{{ date('d F Y', strtotime($murid->diterima)) }}</td>
+                        <td valign="top" colspan="2">{{ $murid->diterima ? date('d F Y', strtotime($murid->diterima)) : '-' }}</td>
                     </tr>
                     <tr>
                         <td valign="top">c. Sekolah Asal</td>
@@ -165,7 +185,7 @@
                     <tr>
                         <td valign="top">Tanggal Ijazah </td>
                         <td valign="top">:</td>
-                        <td valign="top" colspan="2">{{ date('d F Y', strtotime($murid->tanggal_ijazah_smp)) }}</td>
+                        <td valign="top" colspan="2">{{ $murid->tanggal_ijazah_smp ? date('d F Y', strtotime($murid->tanggal_ijazah_smp)) : '-' }}</td>
                     </tr>
                     <tr>
                         <td valign="top" rowspan="3">16</td>
@@ -174,7 +194,7 @@
                     <tr>
                         <td valign="top">Tanggal</td>
                         <td valign="top">:</td>
-                        <td valign="top" colspan="2">{{ date('d F Y', strtotime($murid->tanggal_meninggalkan)) }}</td>
+                        <td valign="top" colspan="2">{{ $murid->tanggal_meninggalkan ? date('d F Y', strtotime($murid->tanggal_meninggalkan)) : '-' }}</td>
                     </tr>
                     <tr>
                         <td valign="top">Alasan</td>
@@ -193,7 +213,7 @@
                     <tr>
                         <td valign="top">Tanggal Ijazah </td>
                         <td valign="top">:</td>
-                        <td valign="top" colspan="2">{{ date('d F Y', strtotime($murid->tanggal_ijazah_akhir)) }}</td>
+                        <td valign="top" colspan="2">{{ $murid->tanggal_ijazah_akhir ? date('d F Y', strtotime($murid->tanggal_ijazah_akhir)) : '-' }}</td>
                     </tr>
                     <tr>
                         <td valign="top">18</td>
@@ -207,7 +227,7 @@
                     </tr>
                 </table>
             </td>
-            <td width="70%" valign="top">
+            <td width="68%" valign="top" style="border: none !important;">
 
                 <div style="text-align:center">
                     <h3 style="font-family:Trebuchet MS, Arial, Helvetica, sans-serif">HASIL PRESTASI BELAJAR</h3>
@@ -238,8 +258,11 @@
                             <th rowspan="2">No</th>
                             <th rowspan="2">Mata Pelajaran</th>
                             @foreach($rombels as $rombel)
-                            <th>{{ $rombel->semester->nama }}
-                                <hr>{{ $rombel->rombonganbelajar->nama }}
+                            <th>
+                                {{ $rombel->semester->nama }}
+                                <div style="border-top: 1px solid #000; margin-top: 2px; padding-top: 2px; font-weight: normal; font-size: 8px;">
+                                    {{ $rombel->rombonganbelajar->nama }}
+                                </div>
                             </th>
                             @endforeach
                         </tr>
