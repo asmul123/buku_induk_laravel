@@ -5,23 +5,23 @@
     <title>Laporan Buku Induk</title>
     <style>
         @page {
-            margin: 15px 20px;
+            margin: 40px 40px;
         }
         body { 
             font-family: DejaVu Sans, sans-serif; 
-            font-size: 10px; 
+            font-size: 13.5px; 
             line-height: 1.15;
             margin: 0;
             padding: 0;
         }
-        h2 { text-align: center; margin-bottom: 10px; font-size: 14px; }
+        h2 { text-align: center; margin-bottom: 10px; font-size: 13.5px; }
         h3 { 
-            font-size: 12px; 
+            font-size: 13.5px; 
             margin: 0 0 2px 0; 
             text-align: center;
         }
         p { 
-            font-size: 9px; 
+            font-size: 13.5px; 
             margin: 0 0 5px 0; 
             text-align: center;
         }
@@ -35,7 +35,7 @@
         table td { 
             border: 1px solid #000; 
             padding: 2px 3px; 
-            font-size: 8.5px; 
+            font-size: 13.5px; 
             line-height: 1.1;
         }
         th { background: #f2f2f2; font-weight: bold; }
@@ -260,7 +260,7 @@
                             @foreach($rombels as $rombel)
                             <th>
                                 {{ $rombel->semester->nama }}
-                                <div style="border-top: 1px solid #000; margin-top: 2px; padding-top: 2px; font-weight: normal; font-size: 8px;">
+                                <div style="border-top: 1px solid #000; margin-top: 2px; padding-top: 2px; font-weight: normal;">
                                     {{ $rombel->rombonganbelajar->nama }}
                                 </div>
                             </th>
